@@ -1,0 +1,471 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>yum 简单介绍 | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="yum 简单介绍yum（全称为 Yellow dog Updater, Modified）是一个在 Fedora和  RedHat 以及 CentOS 中的 Shell 前端软件包管理器。基于 RPM 包管理，能够从指定的服务器自动下载 RPM 包并且安装，可以自动处理依赖性关系，并且一次安装所有依">
+    
+    
+    
+    
+    <link rel="alternative" href="/Tinnypp/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/default_avatar.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/default_avatar.jpg">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/Tinnypp">首页</a></li>
+					
+						<li><a href="/Tinnypp/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/03/21/yum-简单介绍/" title="yum 简单介绍" itemprop="url">yum 简单介绍</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-03-21T15:17:33.000Z" itemprop="datePublished">2017年03月21日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#yum-简单介绍"><span class="toc-number">1.</span> <span class="toc-text">yum 简单介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#yum-命令"><span class="toc-number">2.</span> <span class="toc-text">yum 命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#yum-使用示例"><span class="toc-number">3.</span> <span class="toc-text">yum 使用示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#yum-的配置"><span class="toc-number">4.</span> <span class="toc-text">yum 的配置</span></a></li></ol>
+		</div>
+		
+		<h2 id="yum-简单介绍"><a href="#yum-简单介绍" class="headerlink" title="yum 简单介绍"></a>yum 简单介绍</h2><p><code>yum</code>（全称为 Yellow dog Updater, Modified）是一个在 <code>Fedora</code>和  <code>RedHat</code> 以及 <code>CentOS</code> 中的 <code>Shell</code> 前端软件包管理器。基于 <code>RPM</code> 包管理，能够从<code>指定</code>的服务器自动下载 <code>RPM</code> 包并且安装，可以<code>自动处理依赖</code>性关系，并且一次安装所有依赖的软件包，无须繁琐地一次次下载、安装</p>
+<p><code>yum</code> 主要是更方便的添加、删除、更新RPM包，<code>自动解决</code>软件包之间的<code>依赖关系</code>，<code>方便系统更新</code>及<code>软件管理</code>。<code>yum</code> 通过软件仓库（repository）进行软件的下载、安装等，软件仓库可以是一个 HTTP 或 FTP 站点，也可以是一个本软件池，资源仓库也可以是多个，在 /etc/yum.conf 文件中进行相关配置即可。在yum的资源库中，会包括 <code>RPM</code> 的头信息（header），头信息中包括了软件的功能描述、依赖关系等。通过分析这些信息，<code>yum</code> 计算出依赖关系并进行相关的升级、安装、删除等操作</p>
+<h2 id="yum-命令"><a href="#yum-命令" class="headerlink" title="yum 命令"></a>yum 命令</h2><p>命令格式：</p>
+<pre><code>yum [options] COMMAND
+</code></pre><p>常用选项(options)列表：</p>
+<pre><code>-h, --help         #显示帮助信息
+-t, --tolerant     #容错
+-C, --cacheonly    #完全从系统缓存中运行，不更新缓存
+-c [config file], --config=[config file]      #本地配置文件
+-R [minutes], --randomwait=[minutes]          #命令最大等待时间
+-d [debug level], --debuglevel=[debug level]  #设置调试级别
+-e [error level], --errorlevel=[error level]  #设置错误等级
+-q, --quiet     #退出运行
+-v, --verbose   #详细模式
+-y, --assumeyes #对所有交互提问都回答 yes
+</code></pre><p>命令(COMMAND)列表：</p>
+<pre><code>check         #检测 rpmdb 是否有问题
+check-update  #检查可更新的包
+clean         #清除缓存的数据
+deplist       #显示包的依赖关系
+distribution-synchronization  #将已安装的包同步到最新的可用版本
+downgrade     #降级一个包
+erase         #删除包
+groupinfo     #显示包组的详细信息
+groupinstall  #安装指定的包组
+grouplist     #显示可用包组信息
+groupremove   #从系统删除已安装的包组
+help          #删除帮助信息
+history       #显示或使用交互历史
+info          #显示包或包组的详细信息
+install       #安装包
+list          #显示可安装或可更新的包
+makecache     #生成元数据缓存
+provides      #搜索特定包文件名
+reinstall     #重新安装包
+repolist      #显示已配置的资源库
+resolvedep    #指事实上依赖
+search        #搜索包
+shell         #进入yum的shell提示符
+update        #更新系统中的包
+upgrade       #升级系统中的包
+version       #显示机器可用源的版本
+</code></pre><p><code>注</code>：以上可用命令和选项由于 <code>yum 版本</code>的不同可能会有所有<code>不同</code></p>
+<h2 id="yum-使用示例"><a href="#yum-使用示例" class="headerlink" title="yum 使用示例"></a>yum 使用示例</h2><p>1、安装方式：</p>
+<ul>
+<li>单独安装</li>
+<li>包组安装</li>
+</ul>
+<pre><code># 安装软件包 foo
+yum install foo
+# 安装 Web server 软件包组
+yum groupinsall &quot;Web server&quot;
+</code></pre><p><code>注</code>：<code>groupinsall</code> 是一种快捷安装方式，他会将包组中所需的软件包一次性全部安装。如，上例中的 “Web server” 包组可能会包含： httpd、 crypto-utils 等软件包</p>
+<p>2、更新、升级<br>对于已安装的程序，可以进行升级操作，有以下几种升级方式：</p>
+<pre><code># 检查可用更新
+yum check-update 
+# 全部更机关报
+yum update
+# 更新 foo 软件包
+yum update foo
+# 或
+yum upgrade foo
+# 升级 Web server 软件包组
+yum groupupdate &quot;Web server&quot;
+</code></pre><p>更新安装包时，可以使用update或upgrade，二者区别如下：</p>
+<ul>
+<li>yum update 是更新下载源里面的 metadata，包括这个源有什么包、每个包什么版本之类的</li>
+<li>yum upgrade 会根据update后的元信息对软件包进行升级</li>
+</ul>
+<p>3、删除<br>删除时，可以删除单个软件包或软件包组：</p>
+<pre><code># 删除软件 foo
+yum remove foo
+# 删除 Web server 软件包组
+yum groupremove &quot;Web server&quot;
+</code></pre><p>4、查找<br>通过 <code>search</code> 命令可以查找软件包，而 <code>info</code> 命令可以用来显示<code>软件包信息</code></p>
+<pre><code># 查找名称包含 foo 的软件包
+yum search foo
+# 显示名为 foo 的软件包信息
+yum info foo
+# 显示软件包 foo 的依赖关系
+yum deplist foo
+# 显示软件包组 Web server 的信息
+yum groupinfo &quot;Web server&quot;
+# 显示已安装的软件包 
+yum list installed
+</code></pre><h2 id="yum-的配置"><a href="#yum-的配置" class="headerlink" title="yum 的配置"></a>yum 的配置</h2><p><code>yum</code> 的配置文件分为<code>main</code> 和<code>repository</code> ：</p>
+<ol>
+<li><code>main</code>:定义了<code>全局配置选项</code>，该文件只有一个。通常位于 <code>/etc/yum.conf</code></li>
+<li><code>repository</code>:定义了<code>源服务器</code>的具体配置，可能是一或多个。通常位于 <code>/etc/yum.repo.d</code> 目录</li>
+</ol>
+<p>可以通过以下命令查看yum的配置：</p>
+<pre><code>cat /etc/yum.conf
+</code></pre><p>主要配置项如下：</p>
+<pre><code>[main]
+# yum 的缓存目录，用于存储下载的 RPM 包和数据库
+cachedir=/var/cache/yum/$basearch/$releasever
+
+# 安装完成后是否保留软件包，0为不保留（默认为0），1为保留
+keepcache=0
+
+# Debug 信息输出等级，范围为0-10，默认为2
+debuglevel=2
+
+# yum 日志文件位置，用户通过该文件查询做过的更新   
+logfile=/var/log/yum.log
+
+# 是否只安装和系统架构匹配的软件包。可选项为：1､0，默认为1
+# 设置为 1 时不会将 i686 的软件包安装在适合i386的系统中
+exactarch=1
+
+# update 设置，是否允许更新陈旧的 RPM 包，相当于 upgrade
+obsoletes=1
+
+# 是否进行 GPG(GNU Private Guard) 校验，以确定 RPM 包的来源是有效和安全
+# 当在这个选项设置在[main]部分，则对每个 repository 都有效
+plugins=1
+
+# 是否启用插件，默认1为允许，0表示不允许
+gpgcheck=1
+
+# 排除某些软件在升级名单之外，可以用通配符，各个项目用空格隔开
+exclude=*.i?86 kernel kernel-xen kernel-debug
+
+# 可同时安装多少程序包   
+installonly_limit=5
+
+# Bug 追踪路径   
+bugtracker_url=http://bugs.centos.org/set_project.php?project_id=16&amp;ref=http://bugs.centos.org/bug_report_page.php?category=yum
+
+# 当前发行版版本号   
+distroverpkg=centos-release
+</code></pre><p>相关链接<br><a href="http://www.zhazhablog.com/2017/03/07/CentOS%E6%9B%B4%E6%94%B9yum%E6%BA%90%E4%B8%8E%E6%9B%B4%E6%96%B0%E7%B3%BB%E7%BB%9F/" target="_blank" rel="noopener">CentOS更改yum源与更新系统</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/yum/">yum</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Linux/">Linux</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/03/21/yum-简单介绍/" data-title="yum 简单介绍 | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/03/30/MongoDB 简单介绍以及安装(一)/" title="MongoDB 简单介绍以及安装(一)">
+  <strong>新一篇:</strong><br/>
+  <span>
+  MongoDB 简单介绍以及安装(一)</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/03/09/Redis持久化（五）/"  title="Redis持久化（五）">
+ <strong>旧一篇:</strong><br/> 
+ <span>Redis持久化（五）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

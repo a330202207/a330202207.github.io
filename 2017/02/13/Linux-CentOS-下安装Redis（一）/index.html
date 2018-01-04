@@ -1,0 +1,392 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Linux(CentOS)下安装Redis（一） | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="整理一下最近学习Redis的心得
+VMware版本号：11.1.2 
+CentOS版本：6.6
+
+
+下载rediswget http://download.redis.io/releases/redis-3.0.0.tar.gz
+
+编译源程序tar zxvf redis-3.0.0.tar.gz 
+">
+    
+    
+    
+    
+    <link rel="alternative" href="/Tinnypp/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/default_avatar.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/default_avatar.jpg">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/Tinnypp">首页</a></li>
+					
+						<li><a href="/Tinnypp/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/02/13/Linux-CentOS-下安装Redis（一）/" title="Linux(CentOS)下安装Redis（一）" itemprop="url">Linux(CentOS)下安装Redis（一）</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-02-12T22:19:19.000Z" itemprop="datePublished">2017年02月13日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#整理一下最近学习Redis的心得"><span class="toc-number">1.</span> <span class="toc-text">整理一下最近学习Redis的心得</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#下载redis"><span class="toc-number">2.</span> <span class="toc-text">下载redis</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译源程序"><span class="toc-number">3.</span> <span class="toc-text">编译源程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建redis目录，移动文件，为了便于管理"><span class="toc-number">4.</span> <span class="toc-text">创建redis目录，移动文件，为了便于管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动redis服务（redis服务端的默认连接端口是6379）"><span class="toc-number">5.</span> <span class="toc-text">启动redis服务（redis服务端的默认连接端口是6379）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#客户端连接"><span class="toc-number">6.</span> <span class="toc-text">客户端连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#停止redis"><span class="toc-number">7.</span> <span class="toc-text">停止redis</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#redis的一些配置"><span class="toc-number">8.</span> <span class="toc-text">redis的一些配置</span></a></li></ol>
+		</div>
+		
+		<h2 id="整理一下最近学习Redis的心得"><a href="#整理一下最近学习Redis的心得" class="headerlink" title="整理一下最近学习Redis的心得"></a>整理一下最近学习Redis的心得</h2><ul>
+<li>VMware版本号：11.1.2 </li>
+<li>CentOS版本：6.6</li>
+</ul>
+<hr>
+<h2 id="下载redis"><a href="#下载redis" class="headerlink" title="下载redis"></a>下载redis</h2><pre><code>wget http://download.redis.io/releases/redis-3.0.0.tar.gz
+</code></pre><hr>
+<h2 id="编译源程序"><a href="#编译源程序" class="headerlink" title="编译源程序"></a>编译源程序</h2><pre><code>tar zxvf redis-3.0.0.tar.gz 
+cd redis-3.0.0 
+make
+cd src
+make install
+</code></pre><hr>
+<h2 id="创建redis目录，移动文件，为了便于管理"><a href="#创建redis目录，移动文件，为了便于管理" class="headerlink" title="创建redis目录，移动文件，为了便于管理"></a>创建redis目录，移动文件，为了便于管理</h2><pre><code>mkdir -p /usr/local/redis/bin 
+mkdir -p /usr/local/redis/etc
+mv /src/redis-3.0.0/redis.conf /usr/local/redis/etc
+cd /src/redis-3.0.0/src
+mv mkreleasehdr.sh redis-benchmark redis-check-aof redis-check-dump redis-cli redis-server /usr/local/redis/bin
+</code></pre><hr>
+<h2 id="启动redis服务（redis服务端的默认连接端口是6379）"><a href="#启动redis服务（redis服务端的默认连接端口是6379）" class="headerlink" title="启动redis服务（redis服务端的默认连接端口是6379）"></a>启动redis服务（redis服务端的默认连接端口是<code>6379</code>）</h2><pre><code>/usr/local/redis/bin/redis-server
+/usr/local/redis/etc/redis.conf
+</code></pre><p>默认情况下，redis不是在后台运行的，我们需要把开启的redis后台运行</p>
+<pre><code>vi /usr/local/redis/etc/redis.conf
+</code></pre><p>将<code>daemonize</code>的值改为<code>yes</code></p>
+<p>查看是否启动</p>
+<pre><code>ps -ef | grep redis
+</code></pre><p>查看是否占用6379端口号</p>
+<pre><code>netstat -tunpl | grep 6379
+</code></pre><p>再启动redis</p>
+<pre><code>/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf
+</code></pre><hr>
+<h2 id="客户端连接"><a href="#客户端连接" class="headerlink" title="客户端连接"></a>客户端连接</h2><pre><code> /usr/local/redis/bin/redis-cli
+</code></pre><p>退出客户端</p>
+<pre><code>exit
+</code></pre><p>或者</p>
+<pre><code>quit
+</code></pre><p>再或者<code>Ctrl</code>+<code>C</code></p>
+<hr>
+<h2 id="停止redis"><a href="#停止redis" class="headerlink" title="停止redis"></a>停止redis</h2><pre><code>/usr/local/redis/bin/redis-cli shutdown
+</code></pre><p>或者</p>
+<pre><code>pkill redis-server
+</code></pre><hr>
+<h2 id="redis的一些配置"><a href="#redis的一些配置" class="headerlink" title="redis的一些配置"></a>redis的一些配置</h2><p><code>daemonize</code>如果需要在后台运行，把该项改为yes<br><code>pidfile</code>配置多个pid的地质，默认在/var/ren/redis.pid<br><code>bind</code>绑定ip,设置后只接受来自该ip的请求<br><code>port</code>监听端口，默认为6379<br><code>timeout</code>设置客户端连接时的超时时间，单位为秒<br><code>loglevel</code>分为4级，debug、verbose、notice、warning<br><code>logfile</code>配置log文件地址 databases 设置数据库的个数，默认使用的数据库为0<br><code>save</code>设置redis进行数据库镜像的频率<br><code>rdbcompression</code>在进行镜像备份时，是否进行压缩<br><code>Dbfilename</code>镜像备份文件的文件名<br><code>Dir</code>数据库镜像备份的文件放置路径<br><code>Slaveof</code>设置数据库为其他数据库的从数据库<br><code>Masteauth</code>主数据库连接需要的密码验证<br><code>Requirepass</code>设置登陆时需要的使用的密码<br><code>Maxclients</code>限制同时连接的客户数量<br><code>Maxmemory</code>设置redis能够使用的最大内存<br><code>Appendonly</code>开启append only模式<br><code>Appendfsync</code>设置对appendonly.aof文件同步的频率<br><code>vm-enabled</code>是否开启虚拟内存支持<br><code>vm-swap-file</code>设置虚拟内存的交换文件路径<br><code>vm-max-memory</code>设置redis使用的最大物理内存大小<br><code>vm-page-size</code>设置虚拟内存的页大小<br><code>vm-pages</code>设置交换文件的总的page数量<br><code>vm-max-threads</code>设置VMIO同时使用的线程数量<br><code>Glueoutputbuf</code>设置在向客户端应答时，是否把较小的包合并为一个包发送，默认为开启<br><code>hash-max-zipmap-entries</code>设置hash的临界值<br><code>Activerehashing</code>重置hash，默认为开启</p>
+<hr>
+<p><strong>相关链接：</strong><br><a href="https://segmentfault.com/a/1190000008420258" target="_blank" rel="noopener">Linux下PHP安装Redis扩展（二）</a><br><a href="https://segmentfault.com/a/1190000008469182" target="_blank" rel="noopener">Redis主从配置（三）</a><br><a href="https://segmentfault.com/a/1190000008448919" target="_blank" rel="noopener">Redis集群搭建与简单使用（四）</a><br><a href="https://segmentfault.com/a/1190000008639459" target="_blank" rel="noopener">Redis持久化（五）</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/yum/">yum</a><a href="/tags/Redis/">Redis</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Linux/">Linux</a>►<a class="article-category-link" href="/categories/Linux/NoSQL/">NoSQL</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/02/13/Linux-CentOS-下安装Redis（一）/" data-title="Linux(CentOS)下安装Redis（一） | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/02/14/什么是Trait-性状-？/" title="什么是Trait(性状)？">
+  <strong>新一篇:</strong><br/>
+  <span>
+  什么是Trait(性状)？</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/02/11/hello-world/"  title="Hello World">
+ <strong>旧一篇:</strong><br/> 
+ <span>Hello World
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

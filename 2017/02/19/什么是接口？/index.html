@@ -1,0 +1,458 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>什么是接口？ | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="接口是两个PHP对象之间的契约，其目的不是让一个对象依赖另一个对象，而是依赖一个对象的能力。接口把我们的代码和依赖解耦了，而且允许我们的代码任何实现了预期接口的第三方代码。我们不管第三方代码是如何实现接口的，只关心第三方代码是否实现了指定的接口。
+
+
+定义一个DocumentStore类作用是从不同">
+    
+    
+    
+    
+    <link rel="alternative" href="/Tinnypp/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/default_avatar.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/default_avatar.jpg">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/Tinnypp">首页</a></li>
+					
+						<li><a href="/Tinnypp/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/02/19/什么是接口？/" title="什么是接口？" itemprop="url">什么是接口？</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-02-19T15:08:15.000Z" itemprop="datePublished">2017年02月19日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		
+		</div>
+		
+		<blockquote>
+<p><code>接口</code>是两个PHP对象之间的契约，其目的<code>不是</code>让一个对象依赖另一个对象，<code>而是</code>依赖一个对象的能力。<br><code>接口</code>把我们的代码和依赖<code>解耦</code>了，而且允许我们的代码任何实现了预期接口的第三方代码。我们不管第三方代码是如何实现接口的，只关心第三方代码是否实现了指定的接口。</p>
+</blockquote>
+<hr>
+<p>定义一个<code>DocumentStore</code>类<br>作用是从不同的源收集文本：可以从远程URL读取HTML，也可以读取流资源，也可以收集终端的输出</p>
+<pre><code>class DocumentStore 
+{
+    protected $data = [];
+
+    public function addDocument(Documentable $document)
+    {
+        $key   = $document-&gt;getId();
+        $value = $document-&gt;getContent();
+        $this-&gt;data[$key] = $value;
+    }
+
+    public function getDocuments()
+    {
+        return $this-&gt;data;
+    }    
+}
+</code></pre><p>定义<code>Documentable</code>接口</p>
+<pre><code>interface Documentable
+{
+    public function getId();
+    public function getContent();
+}
+</code></pre><p>这个<code>接口</code>的定义表明，实现<code>Documentable</code>接口的任何对象必须提供一个公开的<code>getId()</code>和<code>getContent()</code>方法</p>
+<p>这么做的用处是，我们可以分开定义获取文档的类，而且使用十分不同的实现方法</p>
+<pre><code>//使用curl从远程URL获取HTML
+class HtmlDocument implements Documentable
+{
+    protected $url;
+
+    public function __construct($url)
+    {
+        $this-&gt;url = $url;
+    }
+
+    public function getId()
+    {
+        return $this-&gt;url;
+    }
+
+    public function getContent()
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this-&gt;url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 1);
+        $html = curl_exec($ch);
+        curl_close($ch);
+
+        return $html;
+</code></pre><pre><code>//读取资源流
+class StreamDocument implements Documentable
+{
+    protected $resource;
+    protected $buffer;
+
+    public function __construct($resource, $buffer = 4096)
+    {
+        $this-&gt;resource = $resource;
+        $this-&gt;buffer = $buffer;
+    }
+
+    public function getId()
+    {
+        return &#39;resource-&#39; . (int)$this-&gt;resource;
+    }
+
+    public function getContent()
+    {
+        $streamContent = &#39;&#39;;
+        rewind($this-&gt;resource);
+        while (feof($this-&gt;resource) == false) {
+            $streamContent .= fread($this-&gt;resource, $this-&gt;buffer);
+        }
+
+        return $streamContent;
+    }
+}
+</code></pre><pre><code>//获取终端命令的执行结果
+class CommandOutputDocument implements Documentable
+{
+    protected $command;
+
+    public function __construct($command)
+    {
+        $this-&gt;command = $command;
+    }
+
+    public function getId()
+    {
+        return $this-&gt;command;
+    }
+
+    public function getContent()
+    {
+        return shell_exec($this-&gt;command);
+    }
+}
+</code></pre><p>如何借助这三种收集文档的实现方法使用<code>DocumentStore</code>类呢？</p>
+<pre><code>$documentStore = new DocumentStore();
+
+//添加HTML文档
+$htmlDoc = new HtmlDocument(&#39;https://php.net&#39;);
+$documentStore-&gt;addDocument($htmlDoc);
+
+//添加流文档
+$streamDoc = new StreamDocument(&#39;stream.txt&#39;, &#39;rb&#39;);
+$documentStore-&gt;addDocument($streamDoc);
+
+//添加终端命令文档
+$cmdDoc = new CommandOutputDocument(&#39;cat /etc/hosts&#39;);
+$documentStore-&gt;addDocument($cmdDoc);
+
+print_r($documentStore-&gt;getDocuments());
+</code></pre><p><code>HtmlDocument</code>、<code>StreamDocument</code>、<code>CommandOutputDocument</code>三个类没任何共同点，只是实现了一个接口</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/PHP/">PHP</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/02/19/什么是接口？/" data-title="什么是接口？ | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/02/20/Sublime一些问题的解决方法/" title="Sublime一些问题的解决方法">
+  <strong>新一篇:</strong><br/>
+  <span>
+  Sublime一些问题的解决方法</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/02/18/Linux下定时备份Mysql数据库/"  title="Linux下定时备份Mysql数据库">
+ <strong>旧一篇:</strong><br/> 
+ <span>Linux下定时备份Mysql数据库
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

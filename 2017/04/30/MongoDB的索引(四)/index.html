@@ -1,0 +1,603 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>MongoDB的索引（四） | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="MongoDB 索引分类1、_id 索引_id 索引是绝大多数集合默认建立的索引，对于每个插入的数据，MongoDB 都会自动生成一条唯一的 _id字段
+2、单键索引
+
+单键索引是最普通的索引
+与_id索引不同，单键索引不会自动创建 如：一条记录，形式为：{ &amp;quot;stu_id&amp;quot; :">
+    
+    
+    
+    
+    <link rel="alternative" href="/Tinnypp/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/default_avatar.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/default_avatar.jpg">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/Tinnypp">首页</a></li>
+					
+						<li><a href="/Tinnypp/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/04/30/MongoDB的索引(四)/" title="MongoDB的索引（四）" itemprop="url">MongoDB的索引（四）</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-04-30T01:57:56.000Z" itemprop="datePublished">2017年04月30日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-索引分类"><span class="toc-number">1.</span> <span class="toc-text">MongoDB 索引分类</span></a></li></ol>
+		</div>
+		
+		<h2 id="MongoDB-索引分类"><a href="#MongoDB-索引分类" class="headerlink" title="MongoDB 索引分类"></a>MongoDB 索引分类</h2><p>1、_id 索引<br><code>_id 索引</code>是绝大多数集合<code>默认建立</code>的<code>索引</code>，对于每个插入的数据，<code>MongoDB</code> 都会<code>自动生成</code>一条<code>唯一</code>的 <code>_id</code>字段</p>
+<p>2、单键索引</p>
+<ol>
+<li><code>单键索引</code>是最<code>普通的</code>索引</li>
+<li>与<code>_id索引</code>不同，<code>单键索引</code>不会自动创建 如：一条记录，形式为：<code>{ &quot;stu_id&quot; : 1, &quot;stu_name&quot; : &quot;李1&quot;}</code></li>
+<li>可以重复创建，若创建已经存在的索引，则会直接返回成功</li>
+</ol>
+<p>3、多键索引<br>多键索引与单键索引创建形式相同，区别在于字段的值：</p>
+<ol>
+<li>单键索引：值为一个单一的值，如字符串，数字或日期</li>
+<li>多键索引：值具有多个记录，如数组</li>
+</ol>
+<p>4、复合索引<br>查询多个条件时,建立复合索引<br>例如<code>{stu_id:1,stu_name:-1}</code>这样一条数据，要按照<code>学生id</code>与<code>学生名字</code>的值进行查询，就需要创建复合索引。</p>
+<pre><code># 1升序;-1降序
+db.student.createIndex({stu_id:1,stu_name:-1}) 
+
+# 使用复合索引查询
+db.student.find({stu_id:1,stu_name:&quot;李1&quot;})
+</code></pre><p>5、过期索引（TTL索引）<br>在<code>一段时间</code>后会<code>过期</code>的<code>索引</code>，在<code>索引过期</code>后，相应的<code>数据</code>会被<code>删除</code>，适合存储在<code>一段时间</code>之后会<code>失效</code>的<code>数据</code>，比如用户的登录信息、存储的日志等</p>
+<pre><code># 创建过期索引，time-字段，expireAfterSeconds-在多少秒后过期，单位：秒
+db.collection.createIndex({time:1},{expireAfterSeconds:10}) 
+
+# time索引30秒后失效
+db.student.createIndex({time:1},{expireAfterSeconds:15})
+
+# new Date()自动获取当前时间，ISODate
+db.student.insert({time:new Date()}) 
+db.student find()
+</code></pre><p>过30秒后再查找，刚才的数据就已经不存在了<br><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%284%29/1.png" alt=""><br>过期索引的限制：</p>
+<ol>
+<li>存储在过期索引字段的值<code>必须</code>是指定的<code>时间类型</code>，必须是 <code>ISODate</code> 或者 <code>ISODate</code> 数组，<code>不能</code>使用<code>时间戳</code>，否则不能<code>自动删除</code></li>
+<li>如果指定了 <code>ISODate</code> 数组，则按照<code>最小</code>的<code>时间</code>进行删除</li>
+<li>过期索引<code>不能</code>是<code>复合索引</code>。因为<code>不能</code>指定<code>两个</code>过期时间</li>
+<li>删除时间是不精确的。删除过程是由 <code>MongoDB</code> 的后台进程每60s跑一次的，而且删除也需要一定时间，所以存在误差</li>
+</ol>
+<p>6、全文索引（文本索引）</p>
+<pre><code># 每个集合只允许创建一个全文索引
+db.articles.createIndex({key: &quot;text&quot;});
+
+# 多个字段上创建全文索引
+db.articles.createIndex({key1:&quot;text&quot;,key2:&quot;text&quot;});
+
+# 所有字段建立全文索引
+db.articles.createIndex({&quot;$**&quot;:&quot;text&quot;});
+
+# 全文索引的查找
+db.articles.find({$text:{$search:&quot;coffee&quot;}});
+
+# 空格代表或操作，aa或bb或cc
+db.articles.find({$text:{$search:&quot;aa bb cc&quot;}});
+
+# -号为非操作，即不包含cc的
+db.articles.find({$text:{$search:&quot;aa bb -cc&quot;}}); 
+
+# 加双引号可以提供与关系操作
+db.articles.find({$text:{$search: &quot;\&quot;aa\&quot; \&quot;bb\&quot; \&quot;cc\&quot;&quot;}}); 
+
+# 全文索引相似度查询，score 返回字段越高相关度越高
+db.articles.find({$text:{$search:&quot;aa bb&quot;}},{score:{$meta:&quot;textScore&quot;}});
+
+# 对`查询`出的`结果`根据`得分`进行`排序`
+db.articles.find({$text:{$search:&quot;aa bb&quot;}},{score:{$meta:&quot;textScore&quot;}}).sort({score:{$meta:&quot;textScore&quot;}})
+</code></pre><p>全文索引的限制：</p>
+<ul>
+<li>每次查询，只能指定一个<code>$text</code>查询</li>
+<li><code>$text</code>查询不能出现在<code>$nor</code>查询(非或)中</li>
+<li>查询中如果包含了 <code>$text</code>, <code>hint</code> 不再起作用（hint:强制指定索引）</li>
+<li><code>MongoDB</code> 全文索引还<code>不支持中文</code></li>
+</ul>
+<p>6、地理位置索引<br>将一些点的位置存储在 <code>MongoDB</code> 中，创建索引后，可以按照位置来查找其他点。</p>
+<p>地理位置索引分为两类：</p>
+<ul>
+<li><code>2d 索引</code>，用于存储和查找<code>平面上的点</code></li>
+<li><code>2dsphere 索引</code>，用于存储和查找<code>球面上的点</code></li>
+</ul>
+<p>1.2d索引:</p>
+<p><code>2d 索引</code>的<code>取值范围</code>以及表示方法:<code>经纬度[经度,纬度]</code>,经纬度取值范围 经度<code>[-180,180]</code>，纬度<code>[-90,90]</code></p>
+<pre><code># 创建 2d 索引
+db.collection.createIndex({&lt;location field&gt;:”2d”});
+
+# 查询距离某个点最近的点 ,默认返回最近的100个点
+db.collection.find({w:{$near:[x,y]}});
+
+# $maxDistance:x 限制返回的最远距离
+db.collection.find({w:{$near:[x,y],$maxDistance:z}});
+
+# 查询矩形中的点
+db.collection.find({w:{$geoWithin:{$box:[[0,0],[3,3]]}}});
+
+# 查询圆中的点
+db.collection.find({w:{$geoWithin:{$center:[[0,0],5]}}});
+
+# 查询多边形中的点
+db.collection.find({w:{$geoWithin:{$polygon:[[0,0],[0,1],[2,5],[6,1]]}}});
+
+# geoNear查询，minDistance对2D索引无效，对2Dsphere有效，num:返回数量
+db.runCommand({geoNear:&quot;collectionName&quot;,near:[x,y],minDistance:10,num:1});
+</code></pre><p>2.2dsphere 索引:</p>
+<p><code>2dsphere</code> 索引位置表示方式是用 <code>GeoJSON</code> 对象来存储的，存储<code>GeoJSON</code>数据的话，在文档中使用 <code>type</code> 字段来指定 <code>GeoJSON</code> 对象类型以及 <code>coordinates</code> 对象来指定对象的坐标：</p>
+<pre><code>{ type: &quot;&lt;GeoJSON type&gt;&quot; , coordinates: &lt;coordinates&gt; }
+</code></pre><p><code>MongoDB</code> 默认使用 <code>WGS84</code> 基准作为 <code>GeoJSON</code>默认的坐标参考系统。</p>
+<p><code>GeoJSON</code> 对象类型：</p>
+<pre><code># 点（Point）
+{ type: &quot;Point&quot;, coordinates: [ 40, 5 ] }
+
+# 线（LineString），coordinate 成员必须是两个或多个坐标的数组
+{ type: &quot;LineString&quot;, coordinates: [ [ 40, 5 ], [ 41, 6 ] ] }
+
+# 单环多边形（ Polygon ），第一个和最后一个坐标必须相同以关闭这个多边形 
+{
+  type: &quot;Polygon&quot;,
+  coordinates: [ [ [ 0 , 0 ] , [ 3 , 6 ] , [ 6 , 1 ] , [ 0 , 0  ] ] ]
+}
+
+# 多环多边形（ Polygon ）
+# 第一个描述的环必须是外环，外环不能自交叉，所有内环必须全部包含在外环中，内环之间不能交叉或覆盖。内环不能共边
+{
+  type : &quot;Polygon&quot;,
+  coordinates : [
+     [ [ 0 , 0 ] , [ 3 , 6 ] , [ 6 , 1 ] , [ 0 , 0 ] ],
+     [ [ 2 , 2 ] , [ 3 , 3 ] , [ 4 , 2 ] , [ 2 , 2 ] ]
+  ]
+}
+
+# 多点（ MultiPoint ）
+{
+  type: &quot;MultiPoint&quot;,
+  coordinates: [
+     [ -73.9580, 40.8003 ],
+     [ -73.9498, 40.7968 ],
+     [ -73.9737, 40.7648 ],
+     [ -73.9814, 40.7681 ]
+  ]
+}
+
+# 多线（ MultiLineString ）
+{
+  type: &quot;MultiLineString&quot;,
+  coordinates: [
+     [ [ -73.96943, 40.78519 ], [ -73.96082, 40.78095 ] ],
+     [ [ -73.96415, 40.79229 ], [ -73.95544, 40.78854 ] ],
+     [ [ -73.97162, 40.78205 ], [ -73.96374, 40.77715 ] ],
+     [ [ -73.97880, 40.77247 ], [ -73.97036, 40.76811 ] ]
+  ]
+}
+
+# 多个多边形（ MultiPolygon ）
+{
+  type: &quot;MultiPolygon&quot;,
+  coordinates: [
+     [ [ [ -73.958, 40.8003 ], [ -73.9498, 40.7968 ], [ -73.9737, 40.7648 ], [ -73.9814, 40.7681 ], [ -73.958, 40.8003 ] ] ],
+     [ [ [ -73.958, 40.8003 ], [ -73.9498, 40.7968 ], [ -73.9737, 40.7648 ], [ -73.958, 40.8003 ] ] ]
+  ]
+}
+
+# 几何集合（GeometryCollection）
+{
+  type: &quot;GeometryCollection&quot;,
+  geometries: [
+     {
+       type: &quot;MultiPoint&quot;,
+       coordinates: [
+          [ -73.9580, 40.8003 ],
+          [ -73.9498, 40.7968 ],
+          [ -73.9737, 40.7648 ],
+          [ -73.9814, 40.7681 ]
+       ]
+     },
+     {
+       type: &quot;MultiLineString&quot;,
+       coordinates: [
+          [ [ -73.96943, 40.78519 ], [ -73.96082, 40.78095 ] ],
+          [ [ -73.96415, 40.79229 ], [ -73.95544, 40.78854 ] ],
+          [ [ -73.97162, 40.78205 ], [ -73.96374, 40.77715 ] ],
+          [ [ -73.97880, 40.77247 ], [ -73.97036, 40.76811 ] ]
+       ]
+     }
+  ]
+}
+</code></pre><p>创建 <code>2dsphere</code> 索引：</p>
+<pre><code># 创建2dsphere索引
+db.collection.createIndex({&lt;location field&gt;:”2dsphere”});
+
+# 插入一个坐标为[-73.97,40.77]的点
+db.places.insert(
+   {
+      loc : { type: &quot;Point&quot;, coordinates: [ -73.97, 40.77 ] },
+      name: &quot;Central Park&quot;,
+      category : &quot;Parks&quot;
+   }
+)
+</code></pre><p>2dsphere 查询类型：</p>
+<ul>
+<li><code>$near （GeoJSON点，2dsphere索引）</code><pre><code># 查询坐标[-73.9667, 40.78],最近1000米，最远5000米的记录
+db.places.find(
+{
+  location:
+    { $near :
+       {
+         $geometry: { type: &quot;Point&quot;,  coordinates: [ -73.9667, 40.78 ] },
+         $minDistance: 1000,
+         $maxDistance: 5000
+       }
+    }
+}
+)
+</code></pre></li>
+<li><code>$nearSphere （GeoJSON点，2dsphere索引）</code><pre><code># 查询坐标[-73.9667, 40.78]最少0.0004弧度距离的记录
+db.legacyPlaces.find(
+{ location : { $nearSphere : [ -73.9667, 40.78 ], $minDistance: 0.0004 } }
+)
+</code></pre></li>
+<li><code>$geoWithin:{$geometry:...}</code> </li>
+<li><code>$geoWithin:{$centerSphere:...}</code><pre><code># 查询坐标[-88, 30]，半径10/3963.2范围内的
+db.places.find( {
+loc: { $geoWithin: { $centerSphere: [ [ -88, 30 ], 10/3963.2 ] } }
+} )
+</code></pre></li>
+<li><code>$geoIntersects</code>  <pre><code># 查询多边形内坐标[ 0, 0 ], [ 3, 6 ], [ 6, 1 ], [ 0, 0 ]相交的记录
+db.places.find(
+{
+  loc: {
+    $geoIntersects: {
+       $geometry: {
+          type: &quot;Polygon&quot; ,
+          coordinates: [
+            [ [ 0, 0 ], [ 3, 6 ], [ 6, 1 ], [ 0, 0 ] ]
+          ]
+       }
+    }
+  }
+}
+)
+</code></pre>索引的操作</li>
+</ul>
+<hr>
+<pre><code># 查询索引
+db.collection.getIndexes();
+
+# 创建索引 1:正序；-1:倒序
+db.collection.createIndex({indexValue:1/-1);
+
+# 指定索引别名
+db.collection.createIndex({indexValue},{name:});
+
+# 指定唯一索引
+db.collection.createIndex({indexValue},{unique:true/false});
+
+# 指定索引是否稀疏
+#   例如，我们为一个collection的x字段指定了索引，
+#   但这个collection中可以# 插入如{y:1,z:1}这种不存在x字段的数据，
+#   如果索引为不稀疏的，MongoDB 依然会为这个数据创建索引，
+#   如果在创建索引时指定为稀疏索引，那么就可以避免这件事情发生了
+db.collection.createIndex({indexValue},{sparse:true/false});
+
+# 删除某个索引
+db.collection.dropIndex({indexValue:1});
+
+# 删除集合下所有索引
+db.collection.dropIndexes();
+</code></pre>  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/MongoDB/">MongoDB</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/NoSQL/">NoSQL</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/04/30/MongoDB的索引(四)/" data-title="MongoDB的索引（四） | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/07/16/MySQL5-7-主从复制配置/" title="MySQL5.7 主从复制配置">
+  <strong>新一篇:</strong><br/>
+  <span>
+  MySQL5.7 主从复制配置</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/04/29/PhpStorm-中简单使用-PHP-CodeSniffer-规范-PHP-代码-Windows/"  title="PhpStorm 中简单使用 PHP_CodeSniffer 规范 PHP 代码(Windows)">
+ <strong>旧一篇:</strong><br/> 
+ <span>PhpStorm 中简单使用 PHP_CodeSniffer 规范 PHP 代码(Windows)
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

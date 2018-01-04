@@ -1,0 +1,425 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Redis集群搭建与简单使用（四） | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="工具
+VMware版本号：12.0.0 
+CentOS版本：7.0
+三台虚拟机(IP)：192.168.1.8、192.168.1.9、192.168.1.10
+
+安装 Redis 下载，解压，编译:
+$ cd /usr/local/
+$ wget http://download.redis.io/">
+    
+    
+    
+    
+    <link rel="alternative" href="/Tinnypp/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/default_avatar.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/default_avatar.jpg">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/Tinnypp">首页</a></li>
+					
+						<li><a href="/Tinnypp/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/03/08/Redis集群搭建与简单使用（四）/" title="Redis集群搭建与简单使用（四）" itemprop="url">Redis集群搭建与简单使用（四）</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-03-07T22:43:42.000Z" itemprop="datePublished">2017年03月08日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#工具"><span class="toc-number">1.</span> <span class="toc-text">工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Redis"><span class="toc-number">2.</span> <span class="toc-text">安装 Redis </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建-Redis-节点"><span class="toc-number">3.</span> <span class="toc-text">创建 Redis 节点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动各个节点"><span class="toc-number">4.</span> <span class="toc-text">启动各个节点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#检查各-Redis-启动情况"><span class="toc-number">5.</span> <span class="toc-text">检查各 Redis 启动情况</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关闭防火墙"><span class="toc-number">6.</span> <span class="toc-text">关闭防火墙</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Ruby"><span class="toc-number">7.</span> <span class="toc-text">安装 Ruby</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建集群"><span class="toc-number">8.</span> <span class="toc-text">创建集群</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集群验证"><span class="toc-number">9.</span> <span class="toc-text">集群验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">10.</span> <span class="toc-text">总结</span></a></li></ol>
+		</div>
+		
+		<h2 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h2><ul>
+<li>VMware版本号：12.0.0 </li>
+<li>CentOS版本：7.0</li>
+<li>三台虚拟机(IP)：192.168.1.8、192.168.1.9、192.168.1.10<br><img src="/img/bVJBNY" alt="图片描述"></li>
+</ul>
+<h2 id="安装-Redis"><a href="#安装-Redis" class="headerlink" title="安装 Redis "></a>安装 Redis </h2><p>下载，解压，编译:</p>
+<pre><code>$ cd /usr/local/
+$ wget http://download.redis.io/releases/redis-3.2.6.tar.gz
+$ tar xzf redis-3.2.6.tar.gz
+$ cd redis-3.2.6
+$ make
+</code></pre><h2 id="创建-Redis-节点"><a href="#创建-Redis-节点" class="headerlink" title="创建 Redis 节点"></a>创建 Redis 节点</h2><p>首先在 <code>192.168.1.8</code> 机器上 <code>/usr/local/redis-3.2.6</code> 目录下创建 <code>redis_cluster</code> 目录</p>
+<pre><code>$ mkdir /usr/local/redis-3.2.6/redis_cluster
+</code></pre><p>在 <code>redis_cluster</code> 目录下，创建名为<code>7000</code>、<code>7001</code>、<code>7002</code>的目录，并将 <code>redis.conf</code> 拷贝到这三个目录中</p>
+<pre><code>$ mkdir 7000 7001 7002
+$ cp /usr/local/redis-3.2.6/redis.conf /usr/local/redis-3.2.6/redis_cluster/7000
+$ cp /usr/local/redis-3.2.6/redis.conf /usr/local/redis-3.2.6/redis_cluster/7001
+$ cp /usr/local/redis-3.2.6/redis.conf /usr/local/redis-3.2.6/redis_cluster/7002
+</code></pre><p>分别修改这<code>三个配置文件</code>，修改如下内容</p>
+<pre><code>port                  7000                        //端口7000,7002,7003        
+bind                  本机ip                      //默认ip为127.0.0.1，需要改为其他节点机器可访问的ip，否则创建集群时无法访问对应的端口，无法创建集群
+daemonize             yes                         //redis后台运行
+pidfile               /var/run/redis_7000.pid     //pidfile文件对应7000，7001，7002
+cluster-enabled       yes                         //开启集群，把注释#去掉
+cluster-config-file   nodes_7000.conf             //集群的配置，配置文件首次启动自动生成 7000，7001，7002
+cluster-node-timeout  15000                       //请求超时，默认15秒，可自行设置
+appendonly            yes                         //aof日志开启，有需要就开启，它会每次写操作都记录一条日志
+</code></pre><p>接着在另外两台机器上(<code>192.168.1.9</code>、<code>192.168.1.10</code>)重复以上三步，只是把目录改为<code>7003、7004、7005、7006、7007、7008</code>对应的<code>配置文件</code>也按照这个<code>规则修改</code>即可</p>
+<h2 id="启动各个节点"><a href="#启动各个节点" class="headerlink" title="启动各个节点"></a>启动各个节点</h2><pre><code>##第一台机器上执行
+$ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7000/redis.conf
+$ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7001/redis.conf
+$ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7002/redis.conf
+
+##第二台机器上执行
+$ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7003/redis.conf
+$ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7004/redis.conf
+$ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7005/redis.conf 
+
+##第三台机器上执行
+$ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7006/redis.conf
+$ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7007/redis.conf
+$ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7008/redis.conf
+</code></pre><h2 id="检查各-Redis-启动情况"><a href="#检查各-Redis-启动情况" class="headerlink" title="检查各 Redis 启动情况"></a>检查各 Redis 启动情况</h2><pre><code>##第一台机器
+$ ps -ef | grep redis           //redis是否启动成功
+$ netstat -tnlp | grep redis    //监听redis端口
+</code></pre><p><img src="/img/bVJBUO" alt="图片描述"><br><code>注</code>：确保每个节点没有配置错误，并且启动起来</p>
+<h2 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h2><pre><code>$ firewall-cmd --state  ##查看防火墙状态
+running
+</code></pre><p><code>running</code> 说明防火墙是打开状态</p>
+<pre><code>$ systemctl stop firewalld  ##关闭防火墙
+$ firewall-cmd --state
+not running
+</code></pre><p><code>注</code>: <code>CentOS 7</code> 关闭防火墙与 <code>CentOS 6</code> 有所不同</p>
+<h2 id="安装-Ruby"><a href="#安装-Ruby" class="headerlink" title="安装 Ruby"></a>安装 Ruby</h2><pre><code>$ yum -y install ruby ruby-devel rubygems rpm-build
+$ gem install redis
+</code></pre><p><code>注</code>:<code>创建集群</code>时需要安装 <code>Ruby</code> 运行<code>redis-trib.rb</code></p>
+<h2 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h2><p><code>Redis</code> 官方提供了 <code>redis-trib.rb</code> 这个工具，就在解压目录的 <code>src</code> 目录中</p>
+<pre><code>$ /usr/local/redis-3.2.6/src/redis-trib.rb  create  --replicas  1  192.168.1.8:7000 192.168.1.8:7001  192.168.1.8:7002 192.168.1.9:7006  192.168.1.9:7004  192.168.1.9:7005 192.168.1.10:7006 192.168.1.10:7007 192.168.1.10:7008
+</code></pre><p>其中，前三个 <code>ip:port</code> 为第一台机器的节点，中间三个为第二台机器，最后三个为第三台机器<br><img src="/img/bVJBZL" alt="图片描述"><br> 输入 <code>yes</code>，然后出现如下内容，说明<code>安装成功</code><br><img src="/img/bVJBZZ" alt="图片描述"></p>
+<h2 id="集群验证"><a href="#集群验证" class="headerlink" title="集群验证"></a>集群验证</h2><p>在第一台机器上连接集群的<code>7000节点</code>，在另外一台连接<code>7004节点</code>，连接方式为：</p>
+<pre><code>##加参数 -C 可连接到集群，因为 redis.conf 将 bind 改为了ip地址，所以 -h 参数不可以省略，-p 参数为端口号
+$ /usr/local/redis-3.2.6/src/redis-cli -h 192.168.1.8 -c -p 7000
+</code></pre><p>在<code>7004节点</code>执行命令：</p>
+<pre><code>192.168.1.9:7004&gt; set name redis
+</code></pre><p><img src="/img/bVJB1e" alt="图片描述"></p>
+<p>然后在另两台<code>7000、7007端口</code>，查看 <code>key</code> 为 <code>name</code> 的内容</p>
+<pre><code>192.168.1.8:7000&gt; get name
+</code></pre><p><img src="/img/bVJB1V" alt="图片描述"></p>
+<pre><code>192.168.1.10:7007&gt; get name
+</code></pre><p><img src="/img/bVJB2c" alt="图片描述"></p>
+<p>说明<code>集群运作正常</code></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>redis cluster</code>在设计的时候，就考虑到了去<code>中心化</code>、<code>去中间件</code>，也就是说，集群中的<code>每个节点</code>都是<code>平等关系</code>，都是<code>对等的</code>，<code>每个节点</code>都<code>保存</code>各自的<code>数据</code>和整个集群的状态。<code>每个节点</code>都和<code>其他所有节点</code>连接，而且这些连接<code>保持活跃</code>，这样就保证了我们<code>只需要连接</code>集群中的<code>任意一个节点</code>，就可以获取到<code>其他节点</code>的<code>数据</code>。</p>
+<p><code>Redis</code> 集群没有并使用传统的<code>一致性哈希来</code>分配数据，而是采用另外一种叫做<code>哈希槽</code>(hash slot)的方式来分配的。<code>redis cluster</code> 默认分配了 <code>16384</code> 个 <code>slot</code>，当我们 <code>set</code>一个 <code>key</code> 时，会用<code>CRC16算法</code>来取模得到所属的 <code>slot</code>，然后将这个 <code>key</code> 分到<code>哈希槽区间的节点</code>上，具体算法就是：<code>CRC16(key)</code> % <code>16384</code>。所以我们在测试的时候看到 <code>set</code> 和 <code>get</code> 的时候，直接跳转到了<code>7000端口</code>的节点。</p>
+<p><code>Redis</code> 集群会把数据存在一个 <code>master</code> 节点，然后在这个 <code>master</code> 和其对应的 <code>salve</code> 之间进行数据同步。当读取数据时，也根据<code>一致性哈希算法</code>到对应的 <code>master</code> 节点获取数据。只有当一个 <code>master</code> 挂掉之后，才会启动一个对应的 <code>salve</code> 节点，充当 <code>master</code> 。</p>
+<p>需要注意的是：必须要<code>3个</code>或<code>以上</code>的<code>主节点</code>，否则在<code>创建集群</code>时会<code>失败</code>，并且当<code>存活</code>的<code>主节点数</code>小于<code>总节点数</code>的<code>一半</code>时，整个<code>集群</code>就<code>无法提供服务</code>了。</p>
+<hr>
+<p><strong>相关文档：</strong><br>中文：<a href="http://www.redis.cn/topics/cluster-tutorial.html" target="_blank" rel="noopener">http://www.redis.cn/topics/cluster-tutorial.html</a><br>英文：<a href="https://redis.io/topics/cluster-tutorial" target="_blank" rel="noopener">https://redis.io/topics/cluster-tutorial</a></p>
+<hr>
+<p><strong>相关链接：</strong><br><a href="https://segmentfault.com/a/1190000008420258" target="_blank" rel="noopener">Linux下PHP安装Redis扩展（二）</a><br><a href="https://segmentfault.com/a/1190000008469182" target="_blank" rel="noopener">Redis主从配置（三）</a><br><a href="https://segmentfault.com/a/1190000008639459" target="_blank" rel="noopener">Redis持久化（五）</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Redis/">Redis</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/NoSQL/">NoSQL</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/03/08/Redis集群搭建与简单使用（四）/" data-title="Redis集群搭建与简单使用（四） | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/03/09/Redis持久化（五）/" title="Redis持久化（五）">
+  <strong>新一篇:</strong><br/>
+  <span>
+  Redis持久化（五）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/03/07/解决向github提交代码不用输入帐号密码/"  title="解决向github提交代码不用输入帐号密码">
+ <strong>旧一篇:</strong><br/> 
+ <span>解决向github提交代码不用输入帐号密码
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

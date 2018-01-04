@@ -1,0 +1,442 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>什么是Trait(性状)？ | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="很多PHP开发朋友都没有弄清楚Trait(性状)。这是PHP5.4.0引入的新概念，既像类又像接口。性状是类的补分实现(即常量、属性、方法)，可以混入一个或者多个现有的PHP类中。性状有两个作用：表明类可以做什么(像是接口)；提供模块化实现(像是类)。
+PHP使用一种典型的继承模型，在这种模型中，我">
+    
+    
+    
+    
+    <link rel="alternative" href="/Tinnypp/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/default_avatar.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/default_avatar.jpg">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/Tinnypp">首页</a></li>
+					
+						<li><a href="/Tinnypp/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/02/14/什么是Trait-性状-？/" title="什么是Trait(性状)？" itemprop="url">什么是Trait(性状)？</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-02-13T22:22:08.000Z" itemprop="datePublished">2017年02月14日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#如何创建性状？"><span class="toc-number">1.</span> <span class="toc-text">如何创建性状？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何使用性状？"><span class="toc-number">2.</span> <span class="toc-text">如何使用性状？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#例子"><span class="toc-number">3.</span> <span class="toc-text">例子</span></a></li></ol>
+		</div>
+		
+		<blockquote>
+<p>很多PHP开发朋友都没有弄清楚<a href="https://secure.php.net/manual/zh/language.oop5.traits.php" target="_blank" rel="noopener">Trait(性状)</a>。这是PHP5.4.0引入的新概念，既像<code>类</code>又像<code>接口</code>。<br><code>性状</code>是<code>类</code>的<code>补分实现</code>(即常量、属性、方法)，可以混入<code>一个</code>或者<code>多个</code>现有的PHP类中。<br><code>性状</code>有两个作用：表明类可以做什么(像是接口)；提供模块化实现(像是类)。</p>
+<p><code>PHP</code>使用一种<code>典型的继承模型</code>，在这种模型中，我们<code>先编写一个通用的根类</code>，实现基本功能，然后扩展这个根类，创建更具体的类，从直接父类继承实现。这叫<code>继承层次结构</code>，很多编程语言都使用了这个模式<br>大多时候，这种典型的继承模型能良好的运行，可是，如果想让两个无关的PHP类具有类似的行为，应该怎么做呢？</p>
+</blockquote>
+<p><strong>假如<code>Shop</code>和<code>Car</code>两个PHP类的作用十分不同，而且在<code>继承层次结构</code>中没有<code>共同的父类</code>。 那么这两个类都应该能使用地理编码技术转化成经纬度，然后在地图上显示。要怎么解决这个问题呢？</strong></p>
+<ol>
+<li><p>创建一个<code>父类</code>让<code>Shop</code>和<code>Car</code>都继承它</p>
+</li>
+<li><p>创建一个<code>接口</code>，定义实现地理编码功能需要哪些方法，然后让<code>Shop</code>和<code>Car</code>两个类都实现这个接口</p>
+</li>
+<li><p>创建一个<code>性状</code>，定义并实现地理编码相关的方法，然后把在<code>Shop</code>和<code>Car</code>两个类中混入这个性状</p>
+</li>
+</ol>
+<p>第一种解决方法不好，因为我们强制让两个无关的类继承同一个祖先，而很明显，这个祖先不属于各自的继承层次结构。</p>
+<p>第二种解决方法好，因为每个类都能保有自然的继承层次结构。但是，我们要在两个类中重复实现的地理编码功能，这不符合<code>DRY原则</code>。<br><strong><code>注</code></strong>：<code>DRY</code>是 <code>Don&#39;t Repeat Yourself(不要自我重复)</code>的简称，表示不要在多个地方重复编写相同的代码，如果需要修改遵守这个原则编写的代码，只需要在一出修改，改动就能体现到其他地方。</p>
+<p>第三种解决方法最好，这么做不会搅乱这两个类原本自然的继承层次结构。</p>
+<hr>
+<h3 id="如何创建性状？"><a href="#如何创建性状？" class="headerlink" title="如何创建性状？"></a>如何创建性状？</h3><pre><code>trait Geocodable 
+{
+    // 这里是性状的实现
+}
+</code></pre><h3 id="如何使用性状？"><a href="#如何使用性状？" class="headerlink" title="如何使用性状？"></a>如何使用性状？</h3><pre><code>class Shop
+{
+    use Geocodable;
+
+    // 这里是类的实现
+}
+</code></pre><hr>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>创建一个<code>Geocodable</code>性状</p>
+<pre><code>trait Geocodable 
+{
+
+    /**
+    * 地址    
+    * @var string 
+    */
+    protected $address;
+
+    /**
+    * 编码器对象
+    * @var \Geocoder\Geocoder 
+    */
+    protected $geocoder;
+
+    /** 
+    * 处理后结果对象
+    * @var \Geocoder\Result\Geocoded 
+    */
+    protected $geocoderResult;
+
+    //注入Geocoder对象
+    public function setGeocoder(\Geocoder\GeocoderInterface $geocoder)
+    {
+        $this-&gt;geocoder = $geocoder;
+    }
+
+    //设定地址
+    public function setAddress($address)
+    {
+        $this-&gt;address = $address;
+    }
+
+    //返回纬度
+    public function getLatitude()
+    {
+        if (isset($this-&gt;geocoderResult) === false) {
+            $this-&gt;geocodeAddress();
+        }
+
+        return $this-&gt;geocoderResult-&gt;getLatitude();
+    }
+
+    //返回经度
+    public function getLongitude()
+    {
+        if (isset($this-&gt;geocoderResult) === false) {
+            $this-&gt;geocodeAddress();
+        }
+
+        return $this-&gt;geocoderResult-&gt;getLongitude();
+    }
+
+    //把地址字符串传给Geocoder实例，获取经地理编码器处理得到的结果
+    protected function geocodeAddress()
+    {
+        $this-&gt;geocoderResult = $this-&gt;geocoder-&gt;geocode($this-&gt;address);
+
+        return true;
+    }
+}
+</code></pre><p><strong>使用性状</strong></p>
+<pre><code>$geocoderAdapter = new \Geocoder\HttpAdapter\CurlHttpAdapter();
+$geocoderAdapter = new \Geocoder\Provider\GoogleMapsProvider($geocoderAdapter);
+$geocoder = new \Geocoder\Geocoder($geocoderProvider);
+
+$store = new Shop();
+$store-&gt;setAddress(&#39;420 9th Avenue, New York, NY 10001 USA&#39;);
+$store-&gt;setGeocoder($geocoder);
+
+$latiude   = $store-&gt;getLatitude();
+$longitude = $store-&gt;getLongitude();
+echo $latitude, &#39;:&#39;, $longitude;
+</code></pre>  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/yum/">yum</a><a href="/tags/Redis/">Redis</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Linux/">Linux</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/02/14/什么是Trait-性状-？/" data-title="什么是Trait(性状)？ | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/02/15/PHP多维数组去重/" title="PHP多维数组去重">
+  <strong>新一篇:</strong><br/>
+  <span>
+  PHP多维数组去重</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/02/13/Linux-CentOS-下安装Redis（一）/"  title="Linux(CentOS)下安装Redis（一）">
+ <strong>旧一篇:</strong><br/> 
+ <span>Linux(CentOS)下安装Redis（一）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>
