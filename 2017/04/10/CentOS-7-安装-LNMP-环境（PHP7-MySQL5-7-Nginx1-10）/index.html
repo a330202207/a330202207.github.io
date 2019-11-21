@@ -1,0 +1,397 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  
+    <title>CentOS 7 安装 LNMP 环境（PHP7 + MySQL5.7 + Nginx1.10） | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="工具
+VMware版本号 ： 12.0.0 
+CentOS版本   ： 7.0一、修改 yum 源
+
+
+[root@localhost ~]# rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rp">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/myLogo.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/myLogo.png">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+</html>
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/04/10/CentOS-7-安装-LNMP-环境（PHP7-MySQL5-7-Nginx1-10）/" title="CentOS 7 安装 LNMP 环境（PHP7 + MySQL5.7 + Nginx1.10）" itemprop="url">CentOS 7 安装 LNMP 环境（PHP7 + MySQL5.7 + Nginx1.10）</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-04-09T21:54:08.000Z" itemprop="datePublished">2017年04月10日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#工具"><span class="toc-number">1.</span> <span class="toc-text">工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、安装-Nginx、MySQL、PHP"><span class="toc-number">2.</span> <span class="toc-text">二、安装 Nginx、MySQL、PHP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、配置"><span class="toc-number">3.</span> <span class="toc-text">三、配置</span></a></li></ol>
+		</div>
+		
+		<h2 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h2><ul>
+<li>VMware版本号 ： 12.0.0 </li>
+<li>CentOS版本   ： 7.0<br>一、修改 yum 源</li>
+</ul>
+<hr>
+<pre><code>[root@localhost ~]# rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+[root@localhost ~]# rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+[root@localhost ~]# rpm -Uvh  http://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm</code></pre><p>webtatic：<a href="https://webtatic.com" target="_blank" rel="noopener">https://webtatic.com</a><br>MySQL:<a href="https://dev.mysql.com/downloads/repo/yum/" target="_blank" rel="noopener">https://dev.mysql.com/downloads/repo/yum/</a></p>
+<h2 id="二、安装-Nginx、MySQL、PHP"><a href="#二、安装-Nginx、MySQL、PHP" class="headerlink" title="二、安装 Nginx、MySQL、PHP"></a>二、安装 Nginx、MySQL、PHP</h2><pre><code>[root@localhost ~]# yum -y install nginx
+[root@localhost ~]# yum -y install mysql-community-server
+[root@localhost ~]# yum -y install php70w-devel php70w.x86_64 php70w-cli.x86_64 php70w-common.x86_64 php70w-gd.x86_64 php70w-ldap.x86_64 php70w-mbstring.x86_64 php70w-mcrypt.x86_64  php70w-pdo.x86_64   php70w-mysqlnd  php70w-fpm php70w-opcache php70w-pecl-redis php70w-pecl-mongo</code></pre><h2 id="三、配置"><a href="#三、配置" class="headerlink" title="三、配置"></a>三、配置</h2><p>1、配置 MySQL<br><code>MySQL</code> 安装完成之后，在 <code>/var/log/mysqld.log</code>文件中给 <code>root</code> 生成了一个<code>默认密码</code>。通过下面的方式找到<code>root 默认密码</code>，然后登录 <code>MySQL</code> 进行修改：</p>
+<pre><code>[root@localhost ~]# systemctl start mysqld    # 启动 MySQL
+[root@localhost ~]# grep &#39;temporary password&#39; /var/log/mysqld.log  # 查找默认密码
+2017-04-10T02:58:16.806931Z 1 [Note] A temporary password is generated for root@localhost: iacFXpWt-6gJ</code></pre><p>登录 <code>MySQL</code>:</p>
+<pre><code>[root@localhost ~]# mysql -uroot -p&#39;iacFXpWt-6gJ&#39;  </code></pre><p>修改<code>root 默认密码</code>:</p>
+<pre><code>mysql&gt; ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;MyPass1!&#39;;</code></pre><p>或者：</p>
+<pre><code>mysql&gt; set password for &#39;root&#39;@&#39;localhost&#39;=password(&#39;123abc&#39;); </code></pre><p><code>注</code>：<code>MySQL5.7</code> 默认安装了<code>密码安全检查插件（validate_password）</code>，默认密码检查策略要求密码必须包含：大小写字母、数字和特殊符号，并且长度不能少于8位。<br>否则会提示ERROR 1819 (HY000): <code>Your password does not satisfy the current policy requirements</code>错误<br><img src="http://olln3wpar.bkt.clouddn.com/LNMP_11.png" alt="此处输入图片的描述"><br>详见 MySQL 官网密码策略详细说明：<a href="https://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy</a><br>配置默认编码为 <code>utf8</code>：<br>修改 <code>/etc/my.cnf</code> 配置文件，在 <code>[mysqld]</code> 下添加编码配置，配置完成后重启：</p>
+<pre><code>[root@localhost ~]# vim /etc/my.cnf
+[mysqld]
+character_set_server=utf8
+init_connect=&#39;SET NAMES utf8&#39;
+[root@localhost ~]# systemctl restart mysqld    # 重启 MySQL</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/LNMP_15.png" alt="此处输入图片的描述"><br>设置开机启动：</p>
+<pre><code>[root@localhost ~]# systemctl enable mysqld</code></pre><p>默认配置文件路径：<br>配置文件：<code>/etc/my.cnf</code><br>日志文件：<code>/var/log//var/log/mysqld.log</code><br>服务启动脚本：<code>/usr/lib/systemd/system/mysqld.service</code><br>socket 文件：<code>/var/run/mysqld/mysqld.pid</code></p>
+<p>2、配置 Nginx<br>安装完成以后查看自己<code>防火墙</code>是否开启，如果已开启，我们需要<code>修改</code>防火墙<code>配置</code>，开启 <code>Nginx</code> 外网端口访问。</p>
+<pre><code>[root@localhost ~]# systemctl status firewalld</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/LNMP_1.png" alt="此处输入图片的描述"><br>如果显示 <code>active (running)</code>，则需要调整防火墙规则的配置。</p>
+<p>修改 <code>/etc/firewalld/zones/public.xml</code>文件，在zone一节中增加<br>保存后重新加载 <code>firewalld</code> 服务：</p>
+<pre><code>[root@localhost ~]# vim /etc/firewalld/zones/public.xml
+&lt;zone&gt;
+    ...
+    &lt;service name=&quot;nginx&quot;/&gt;
+&lt;zone&gt;
+[root@localhost ~]# systemctl reload firewalld</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/LNMP_2.png" alt="此处输入图片的描述"><br>修改 <code>Nginx</code> 配置：</p>
+<pre><code>[root@localhost ~]# vim /etc/nginx/nginx.conf</code></pre><p>在 <code>server {}</code> 里添加：</p>
+<pre><code>location / {
+    #定义首页索引文件的名称
+    index index.php index.html index.htm;   
+}
+
+# PHP 脚本请求全部转发到 FastCGI处理. 使用FastCGI默认配置.
+location ~ .php$ {
+    fastcgi_pass 127.0.0.1:9000;
+    fastcgi_index index.php;
+    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    include fastcgi_params;
+}</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/LNMP_12.png" alt="此处输入图片的描述"><br>配置完成重启 <code>Nginx</code>：</p>
+<pre><code>[root@localhost ~]# systemctl start nginx    # 启动 Nginx</code></pre><p><code>注</code>：本文只是简单配置 <code>Nginx</code>，具体更多配置请自行百度。<br>设置开机启动:</p>
+<pre><code>[root@localhost ~]# systemctl enable nginx</code></pre><p>3、设置开机启动 <code>php-fpm</code>：</p>
+<pre><code>[root@localhost ~]# systemctl enable php-fpm
+[root@localhost ~]# systemctl start php-fpm    # 启动 php-fpm</code></pre><p>四、测试：</p>
+<ul>
+<li>在 <code>/usr/share/nginx/html</code> 文件下创建php文件，输出 <code>phpinfo</code> 信息</li>
+<li>浏览器访问 <code>http://&lt;内网IP地址&gt;/phpinfo.php</code>，如果看到 PHP 信息，说明<code>安装成功</code><br><img src="http://olln3wpar.bkt.clouddn.com/LNMP_13.png" alt="此处输入图片的描述"></li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/yum/">yum</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Linux/">Linux</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/04/10/CentOS-7-安装-LNMP-环境（PHP7-MySQL5-7-Nginx1-10）/" data-title="CentOS 7 安装 LNMP 环境（PHP7 + MySQL5.7 + Nginx1.10） | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/04/28/MongoDB-的基本命令（二）/" title="MongoDB 的基本命令（二）">
+  <strong>新一篇:</strong><br/>
+  <span>
+  MongoDB 的基本命令（二）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/04/08/CentOS下三种PHP拓展安装方法/"  title="CentOS下三种PHP拓展安装方法">
+ <strong>旧一篇:</strong><br/> 
+ <span>CentOS下三种PHP拓展安装方法
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

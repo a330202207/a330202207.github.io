@@ -1,0 +1,482 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  
+    <title>MongoDB 的常用操作（三） | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="MongoDB 集合操作1.显示创建集合
+db.createCollection();
+2.查看集合
+show collections
+show tables
+3.隐式创建
+db.class.insert({‘classId’:1,’className’:”三年二班”});表示往 class 集合中">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/myLogo.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/myLogo.png">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+</html>
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/04/29/MongoDB-的常用操作（三）/" title="MongoDB 的常用操作（三）" itemprop="url">MongoDB 的常用操作（三）</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-04-28T22:50:53.000Z" itemprop="datePublished">2017年04月29日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-集合操作"><span class="toc-number">1.</span> <span class="toc-text">MongoDB 集合操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-文档操作"><span class="toc-number">2.</span> <span class="toc-text">MongoDB 文档操作</span></a></li></ol>
+		</div>
+		
+		<h2 id="MongoDB-集合操作"><a href="#MongoDB-集合操作" class="headerlink" title="MongoDB 集合操作"></a>MongoDB 集合操作</h2><p>1.显示创建集合</p>
+<pre><code>db.createCollection();</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/1.png" alt></p>
+<p>2.查看集合</p>
+<pre><code>show collections
+show tables</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/2.png" alt></p>
+<p>3.隐式创建</p>
+<pre><code>db.class.insert({‘classId’:1,’className’:”三年二班”});</code></pre><p>表示往 <code>class</code> 集合中插入一个<code>文档</code>(班级编号为1，班级名称为三年二班)。<br>本质是，往一个集合中插入一条数据，如果这个集合不存在，<code>MongoDB</code> 会自动帮我们创建该集合<br><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/3.png" alt></p>
+<p>4.删除集合</p>
+<pre><code>db.collectionName.drop();</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/4.png" alt></p>
+<h2 id="MongoDB-文档操作"><a href="#MongoDB-文档操作" class="headerlink" title="MongoDB 文档操作"></a>MongoDB 文档操作</h2><p>1.文档插入<br><code>MongoDB</code> 中数据插入，指的是将创建的<code>文档</code>，<code>插入</code>到指定的<code>集合</code>中</p>
+<pre><code>db.collectionName.insert(doc);</code></pre><p>如果<code>集合不存在</code>，则<code>创建</code>该集合。<code>doc</code> 可以是一个<code>集合</code>或者一个<code>集合数组</code>。<br><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/5.png" alt><br><code>_id</code> 这是 <code>MongoDB</code> 自动生成的一个<code>全球唯一</code>的<code>主键</code>，用于<code>区分文档</code>。其包含四部分：<code>时间戳</code>、<code>机器</code>、<code>PID(进程号)</code>、<code>计数器</code></p>
+<p>插入多个文档:<br><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/6.png" alt></p>
+<p>2.文档删除</p>
+<pre><code>db.collectionName.remove(where,[justOne]);</code></pre><p><code>where</code> 代表<code>删除条件</code>，当 <code>where</code> 为<code>{}</code>代表<code>删除所有</code>文档。<br><code>justOne</code> 默认情况下为 <code>false</code>，代表<code>匹配</code>条件的<code>文档</code>有多个的时候，<code>删除所有</code>的<code>匹配文档</code>。如果设置为 <code>true</code> 或<code>1</code>（设置其他非0的整数也可以），代表仅仅<code>删除一个</code>文档。</p>
+<p>删除 <code>school</code> 数据库 <code>student</code> 集合里名字(stu_name)为王五的文档:</p>
+<pre><code>db.student.remove({&quot;stu_name&quot;:&quot;王五&quot;});</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/7.png" alt></p>
+<p>删除 <code>school</code> 数据库 <code>student</code> 集合里班级编号(class_id)为1的一个集合:</p>
+<pre><code>db.student.remove({&quot;class_id&quot;:1},2);</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/8.png" alt></p>
+<p>虽然<code>满足</code>条件的<code>文档</code>很多，但是<code>仅仅删除</code>了其中<code>一个文档</code>。</p>
+<p>3.文档修改</p>
+<pre><code>db.collectionName.update(query,update,upset,multi);</code></pre><p><code>collectionName</code>：集合名字</p>
+<p><code>query</code>：修改的条件，类似 SQL 的 where 语句。<br><code>update</code>：更新命令，类似 SQL 的 set 语句。<br><code>upset</code>：可选，默认为 false，如果未发现符合更新条件的数据内容，是否执行插入操作，1或者 true 代表进行插入,0或者 false 代表不插入。<br><code>multi</code>：可选，MongoDB 默认为 false。是否进行多行更新。1或者 true 进行·多行更新,0或者false代表不更新`。</p>
+<p>关于 <code>update</code> 格式有<code>两种</code>形式</p>
+<ul>
+<li>直接<code>赋值</code>使用 <code>{set:{}}</code><br>如 <code>{set:{“name”:”张三”}}</code>，将名字改为张三</li>
+<li>进行<code>算术运算</code>使用 <code>{inc:{}}</code><br>如 <code>{inc:{“age”:3}}</code>，将 <code>age</code> 增加3<br>如 <code>{$inc:{“age”:-3}}</code>，将 <code>age</code> 减3</li>
+</ul>
+<p><strong>实例用法：</strong><br>1、更新文档中不存在字段</p>
+<pre><code># 更新学生编号(stu_id)为2文档，为其添加一个字段年龄(age)为13
+db.student.update({&quot;stu_id&quot;:2},{$set:{&quot;age&quot;:13}});</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/9.png" alt></p>
+<p>2、批量更新文档中不存在字段</p>
+<pre><code># 更新学生，将其年龄(age不存在)设置为12
+db.student.update({},{$set:{&quot;age&quot;:12}},0,1);</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/10.png" alt></p>
+<p>3、批量指定字段更新</p>
+<pre><code># 将班级编号为2的所有学生，年龄(age)增加1
+db.student.update({&quot;class_id&quot;:1},{$inc:{&quot;age&quot;:1}},0,1);</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/11.png" alt></p>
+<p>4.文档查询</p>
+<ul>
+<li><p>查询集合中的所有文档</p>
+<pre><code>db.collectionName.find();</code></pre><p>为了便于查找，先向其中插入一些数据</p>
+<pre><code>for (var i = 1;i &lt; 20;i ++){
+db.student.insert({&quot;stu_id&quot;:i,&quot;stu_name&quot;:&quot;李&quot; + i});
+}
+db.student.find();</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/12.png" alt></p>
+</li>
+<li><p>查询集合中的第一个文档</p>
+<pre><code>db.collectionName.findOne();</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/13.png" alt></p>
+</li>
+</ul>
+<p><strong>条件查询：</strong></p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th align="right">价格</th>
+<th align="center">数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>等于(=)</td>
+<td align="right">/</td>
+<td align="center">查找名字为李四的所有学生：db.student.find({“name”:”李四”});</td>
+</tr>
+<tr>
+<td>等于(!=)</td>
+<td align="right">$ne</td>
+<td align="center">查找名字不为李四的所有学生：db.student.find({“name”:{‘$ne:”李四”}’}});</td>
+</tr>
+<tr>
+<td>大于(&gt;)</td>
+<td align="right">$gt</td>
+<td align="center">查找所有年龄大于5的学生：db.student.find({“age”:{$gt:5}});</td>
+</tr>
+<tr>
+<td>小于(&lt;)</td>
+<td align="right">$lt</td>
+<td align="center">查找所有年龄小于15的学生：db.student.find({“age”:{$lt:15}});</td>
+</tr>
+<tr>
+<td>大于等于(&gt;=)</td>
+<td align="right">$gte</td>
+<td align="center">查找所有年龄大于或等于5的学生：db.student.find({“age”:{$gte:5}});</td>
+</tr>
+<tr>
+<td>小于等于(&gt;=)</td>
+<td align="right">\ &#124; $lte</td>
+<td align="center">查找所有年龄小于或等于15的学生：db.student.find({“age”:{$lte:15}});</td>
+</tr>
+<tr>
+<td>与(and)</td>
+<td align="right">/</td>
+<td align="center">查找所有年龄小于或等于15且班级编号为1的所有学生：db.student.find({“age”:{$lte:15},”class_id”:1});</td>
+</tr>
+<tr>
+<td>或(or)</td>
+<td align="right">{$or:[{条件1},{条件2}]}</td>
+<td align="center">查找所有年龄小于或等于15或者班级为1的所有学生：db.student.find({$or:[{“age”:{$lte:15}},{“class_id”:1}]});</td>
+</tr>
+<tr>
+<td>非或(nor)</td>
+<td align="right">{$nor:[{条件1},{条件2}]}</td>
+<td align="center">条件1不能满足和条件2不能满足</td>
+</tr>
+<tr>
+<td>集合运算符(in)</td>
+<td align="right">$in</td>
+<td align="center">查找年龄12或者13或者14的学生：db.student.find({“age”:{$in:[12,13,14]}});</td>
+</tr>
+<tr>
+<td>集合运算符(all)</td>
+<td align="right">$all</td>
+<td align="center">查找爱好包含football,和basketBall的所有学生：db.student.find({“hobby”:{$all:[“football”,”basketBall”]}});</td>
+</tr>
+<tr>
+<td>是否存在(exists)</td>
+<td align="right">$exists</td>
+<td align="center">查询存在hooby的所有学生：db.student.find({hobby:{$exists:1}});{$exists:0}代表不存在</td>
+</tr>
+</tbody></table>
+<p>5.统计、排序、分页</p>
+<ul>
+<li><p>统计</p>
+<pre><code>db.collectionName.count();
+db.collectionName.find().count();</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/14.png" alt></p>
+</li>
+<li><p>排序</p>
+<pre><code># key升序排列
+db.collectionName.find().sort({key:1});</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/15.png" alt></p>
+</li>
+</ul>
+<pre><code># key降序排列
+db.collectionName.find().sort({key:-1});</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/16.png" alt></p>
+<ul>
+<li>分页<pre><code>db.collectionName.find().skip(n).limit(m);</code></pre>从 <code>collectionName</code> 中第 <code>n</code> 个文档开始读取，共读取 <code>m</code> 个文档，需要注意的是 <code>MongoDB</code> 中 <code>n</code> 是从 0 开始的。可以类比 <code>MySQL</code> 中 <code>limit</code> 方法。<code>n</code> 相当于 <code>limit</code> 中的第一个方法，<code>m</code> 相当于 <code>limit</code> 中第二个参数,当使用分页时候，若使用 <code>count</code>，需要注意 <code>MongoDB</code> 统计数量默认是忽略分页的<br><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/17.png" alt><br>给 <code>count</code> 传递一个参数 <code>count(flag)</code>。<code>flag</code>为 <code>0</code>（默认情况为0）<code>忽视分页</code>，<code>flag</code> 为<code>1</code>，<code>不忽视分页</code>。<br>从 <code>student</code> 中取出6~12条数据<pre><code>db.student.find().skip(6).limit(6);</code></pre><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/18.png" alt><br>从集合 student 中取出第一条数据<pre><code>db.student.find().skip(0).limit(1);</code></pre><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/19.png" alt></li>
+</ul>
+<p>6.投影查询<br>在 MongoDB 中，每次查询都是将所有的键都显示出来了，怎样只让部分键显示呢？这就要用到投影查询。<br>比如，我只让集合 student 查询结果中 stu_name 显示。</p>
+<pre><code>db.student.find({},{_id:0,stu_id:0});</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%283%29/20.png" alt><br>在 <code>MongoDB</code> 中，<code>find</code> 函数里面的<code>第二个参数</code>是用来<code>控制</code>让哪些键<code>显示</code>或者<code>不显示</code>。<code>0</code>是<code>不显示</code>，<code>1</code>为<code>显示</code>。<code>默认</code>情况下为<code>显示</code>。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/MongoDB/">MongoDB</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/NoSQL/">NoSQL</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/04/29/MongoDB-的常用操作（三）/" data-title="MongoDB 的常用操作（三） | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/04/29/PhpStorm-中简单使用-PHP-CodeSniffer-规范-PHP-代码-Windows/" title="PhpStorm 中简单使用 PHP_CodeSniffer 规范 PHP 代码(Windows)">
+  <strong>新一篇:</strong><br/>
+  <span>
+  PhpStorm 中简单使用 PHP_CodeSniffer 规范 PHP 代码(Windows)</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/04/28/MongoDB-的基本命令（二）/"  title="MongoDB 的基本命令（二）">
+ <strong>旧一篇:</strong><br/> 
+ <span>MongoDB 的基本命令（二）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

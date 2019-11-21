@@ -1,0 +1,402 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  
+    <title>MySQL5.7 主从复制配置 | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="一、主从复制原理
+MySQL 主从复制是一个异步的复制过程，主库发送更新事件到从库，从库读取更新记录，并执行更新记录，使得从库的内容与主库保持一致。每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个 Binarylog 输出线程，每一个从库都有它自己的 I/O 线">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/myLogo.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/myLogo.png">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+</html>
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/07/16/MySQL5-7-主从复制配置/" title="MySQL5.7 主从复制配置" itemprop="url">MySQL5.7 主从复制配置</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-07-16T05:06:09.000Z" itemprop="datePublished">2017年07月16日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、主从复制原理"><span class="toc-number">1.</span> <span class="toc-text">一、主从复制原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、工具"><span class="toc-number">2.</span> <span class="toc-text">二、工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、准备工作"><span class="toc-number">3.</span> <span class="toc-text">三、准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、步骤"><span class="toc-number">4.</span> <span class="toc-text">四、步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、主从配置检验"><span class="toc-number">5.</span> <span class="toc-text">五、主从配置检验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、思考"><span class="toc-number">6.</span> <span class="toc-text">六、思考</span></a></li></ol>
+		</div>
+		
+		<h2 id="一、主从复制原理"><a href="#一、主从复制原理" class="headerlink" title="一、主从复制原理"></a>一、主从复制原理</h2><blockquote>
+<p><code>MySQL</code> 主从复制是一个<code>异步</code>的<code>复制</code>过程，<code>主库</code>发送<code>更新事件</code>到<code>从库</code>，<code>从库</code>读取<code>更新记录</code>，并<code>执行</code>更新<code>记录</code>，使得<code>从库</code>的内容与主库<code>保持一致</code>。每一个<code>主从复制</code>的连接，都有<code>三个线程</code>。拥有<code>多个从库</code>的<code>主库</code>为<code>每一个连接</code>到<code>主库</code>的<code>从库</code>创建一个 <code>Binarylog</code> 输出线程，<code>每一个从库</code>都有它自己的 <code>I/O</code> 线程和 <code>SQL</code> 线程。<br><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg00.png" alt><br><strong>步骤</strong>：<br>1.<code>主库</code>会将<code>所有</code>的<code>更新</code>记录保存到 <code>Binarylog</code> 文件。<br>2.每当有<code>从库</code>连接到<code>主库</code>的时候，<code>主库</code>都会创建一个 <code>log dump</code> 线程发送 <code>Binarylog</code> 文件到<code>从库</code>。<br>3.在<code>从库</code>里，当复制开始的时候，<code>从库</code>就会创建<code>两个线程</code>进行处理，一个 <code>I/O</code> 线程，一个 <code>SQL</code> 线程。<br>4. <code>I/O</code> 线程去请求<code>主库</code>的  <code>Binarylog</code>文件，并将得到的 <code>Binarylog</code> 文件写到 <code>Relaylog</code> 文件中。<br>5. <code>SQL</code> 线程会读取 <code>Relaylog</code> 文件中的日志，并解析成具体操作，来实现主从的操作一致，而最终数据一致。</p>
+</blockquote>
+<h2 id="二、工具"><a href="#二、工具" class="headerlink" title="二、工具"></a>二、工具</h2><ul>
+<li>VMware版本：12.0.0 </li>
+<li>CentOS版本：7.0</li>
+<li>MySQL版本: 5.7.18</li>
+<li>Master 服务器：192.168.78.128</li>
+<li>Slave 服务器：192.168.78.130</li>
+</ul>
+<h2 id="三、准备工作"><a href="#三、准备工作" class="headerlink" title="三、准备工作"></a>三、准备工作</h2><p>1.安装 MySQL5.7 <a href="http://upupjie.com/2017/04/10/CentOS-7-%E5%AE%89%E8%A3%85-LNMP-%E7%8E%AF%E5%A2%83%EF%BC%88PHP7-MySQL5-7-Nginx1-10%EF%BC%89/" target="_blank" rel="noopener">详见此处</a><br>2.如果<code>从服务器</code>是<code>克隆</code>的<code>主服务器</code>，则修改 <code>auto.cnf</code> 文件中 <code>server-uuid</code> 值，不然后面<code>主从复制</code>会报 <code>1593</code> 错误。修改完记得重启MySQL<br><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/1.png" alt><br>3.关闭<code>主、从</code>服务器<code>防火墙</code>：</p>
+<pre><code>$ firewall-cmd --state      ##查看防火墙状态
+running                     ##防火墙开启
+
+$ systemctl stop firewalld  ##关闭防火墙
+$ firewall-cmd --state
+not running                 ##防火墙关闭</code></pre><p>4.修改<code>主从配置</code>文件(my.cnf)</p>
+<p>192.168.78.128(master)：</p>
+<pre><code>bind-address=192.168.78.128         #当前服务器地址
+log_bin=mysql-bin  
+server_id=128</code></pre><p>192.168.78.130(slave)：</p>
+<pre><code>bind-address=192.168.78.130         #当前服务器地址
+log_bin=mysql-bin  
+server_id=130</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/2.png" alt></p>
+<p>重启主从 <code>MySQL</code>:</p>
+<pre><code>$ systemctl restart mysqld</code></pre><p><code>注</code>: <code>server_id</code> 必须唯一</p>
+<p>5.<code>master</code> 上创建一个测试数据库</p>
+<pre><code>$ create database test;
+$ use test;
+$ create table test(id int(11), value varchar(20));
+$ insert into test values(1, &#39;aa&#39;),(2, &#39;bb&#39;),(3, &#39;cc&#39;);</code></pre><h2 id="四、步骤"><a href="#四、步骤" class="headerlink" title="四、步骤"></a>四、步骤</h2><p>1.<code>master</code>创建授权用户：<br>192.168.78.128(master)：</p>
+<pre><code>##创建 test 用户，指定该用户只能在master 192.168.78.130 上
+##使用 MyPass1! 密码登录
+mysql&gt; create user &#39;test&#39;@&#39;192.168.78.130&#39; identified by &#39;MyPass1!&#39;;
+
+##为 test 用户赋予 REPLICATION SLAVE 权限。
+mysql&gt; grant replication slave on *.* to &#39;test&#39;@&#39;192.168.78.130&#39;;
+
+##查看用户
+mysql&gt; select user,host from mysql.user;
+
+##查看 master 状态
+mysql&gt; show master status;</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/3.png" alt><br><code>注</code>：<br>这里的 <code>mysql-bin.000001</code>和 <code>Position</code> 配置 <code>slave</code> 的时候需要用到</p>
+<p>2.将 <code>master</code> 中现有的数据信息<code>导出</code>：</p>
+<pre><code>$ mysqldump -u root -p --all-databases --master-data &gt; all.sql</code></pre><p>3.将 <code>all.sql</code> 发送到 <code>slave</code> 服务器 <code>tmp</code> 目录下:</p>
+<pre><code>$ scp all.sql root@192.168.78.130:/tmp</code></pre><p>4.<code>slave</code> 导入 <code>master</code> 数据，使 <code>master-slave</code> 数据<code>保持一致</code>：</p>
+<p>192.168.78.130(slave)：</p>
+<pre><code>$ mysql -uroot -p &lt; all.sql</code></pre><p>5.使 <code>slave</code> 与 <code>master</code> 建立连接，从而同步</p>
+<pre><code>mysql&gt; change master to
+    -&gt; master_host=&#39;192.168.78.128&#39;,
+    -&gt; master_user=&#39;test&#39;,
+    -&gt; master_password=&#39;MyPass1!&#39;,
+    -&gt; master_log_file=&#39;mysql-bin.000001&#39;,
+    -&gt; master_log_pos=1244;
+
+mysql&gt; start slave;
+
+mysql&gt; show slave status \G</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/5.png" alt></p>
+<p><code>注</code>：</p>
+<ul>
+<li><code>master_log_file</code> 和 <code>master_log_pos</code>值为<code>主库</code>上面执行<code>show master status</code>得到</li>
+<li>如果 <code>Slave_IO_Running</code> 和 <code>Slave_SQL_Running</code> 都为 <code>Yes</code>，说明配置<code>成功</code>。 如果</li>
+<li>其中一项不为 <code>Yes</code>，查看 <code>Last_IO_Errno</code> 错误码和<code>错误信息</code>，或者查看 <code>MySQL</code> 日志信息并查找对应问题。</li>
+</ul>
+<h2 id="五、主从配置检验"><a href="#五、主从配置检验" class="headerlink" title="五、主从配置检验"></a>五、主从配置检验</h2><p><code>master</code> 插入一条数据，<code>slave</code>查看是否成功<br>192.168.78.128(master)：<br><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/6.png" alt></p>
+<p>192.168.78.130(slave)：<br><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/7.png" alt></p>
+<h2 id="六、思考"><a href="#六、思考" class="headerlink" title="六、思考"></a>六、思考</h2><p>主从复制同步<code>延迟</code>如何解决？</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/07/16/MySQL5-7-主从复制配置/" data-title="MySQL5.7 主从复制配置 | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/07/20/整理一个自己知识体系/" title="整理一个自己知识体系">
+  <strong>新一篇:</strong><br/>
+  <span>
+  整理一个自己知识体系</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/04/30/MongoDB的索引(四)/"  title="MongoDB的索引（四）">
+ <strong>旧一篇:</strong><br/> 
+ <span>MongoDB的索引（四）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>
