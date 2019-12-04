@@ -315,7 +315,7 @@ db.collection.dropIndexes();
 ```
 
 
-  [1]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%284%29/1.png
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%284%29/1.png
 
 
 

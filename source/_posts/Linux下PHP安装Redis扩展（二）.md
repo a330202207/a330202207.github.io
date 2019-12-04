@@ -16,6 +16,7 @@ categories:
 ```
 [root@localhost ~]# wget http://pecl.php.net/get/redis-3.1.0.tgz
 ```
+
 二、解压安装并进入Redis目录
 ----------------
 ```
@@ -35,9 +36,9 @@ Zend Extension Api No:   320160303
 [root@localhost redis-3.1.0]# make && make install
 
 ```
-![图片描述][1]
-![图片描述][2]
-![图片描述][3]
+![][1]
+![][2]
+![][3]
 
 `redis.so`扩展存放在`/usr/local/php/lib/php/extensions/no-debug-non-zts-20160303/`目录下。
 
@@ -46,7 +47,7 @@ Zend Extension Api No:   320160303
 ```
 extension=redis.so
 ```
-![图片描述][4]
+![][4]
 
 五、重启服务器(Apache或者Nginx)
 ----------------
@@ -63,7 +64,7 @@ extension=redis.so
 六、测试
 ----------------
 浏览器访问`index.php`文件,输出`phpinfo`信息，如果有Redis信息，则`安装成功`
-![图片描述][5]
+![][5]
 
 七、其他
 ----------------
@@ -75,11 +76,11 @@ extension=redis.so
 [Redis持久化（五）][8]
 
 
-  [1]: /img/bVJuAv
-  [2]: /img/bVJuA4
-  [3]: /img/bVJuA9
-  [4]: /img/bVJuCr
-  [5]: http://olln3wpar.bkt.clouddn.com/redis_so.png
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/1_articlex.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/2_articlex.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/3_articlex.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/4_articlex.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/5_articlex.png
   [6]: https://segmentfault.com/a/1190000008469182
   [7]: https://segmentfault.com/a/1190000008448919
   [8]: https://segmentfault.com/a/1190000008639459

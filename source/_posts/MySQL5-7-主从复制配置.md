@@ -157,10 +157,10 @@ mysql> show slave status \G
 主从复制同步`延迟`如何解决？
 
   [1]: http://upupjie.com/2017/04/10/CentOS-7-%E5%AE%89%E8%A3%85-LNMP-%E7%8E%AF%E5%A2%83%EF%BC%88PHP7-MySQL5-7-Nginx1-10%EF%BC%89/
-  [2]: http://olln3wpar.bkt.clouddn.com/Mysql/jpg/1.png
-  [3]: http://olln3wpar.bkt.clouddn.com/Mysql/jpg/2.png
-  [4]: http://olln3wpar.bkt.clouddn.com/Mysql/jpg/3.png
-  [5]: http://olln3wpar.bkt.clouddn.com/Mysql/jpg/5.png
-  [6]: http://olln3wpar.bkt.clouddn.com/Mysql/jpg/6.png
-  [7]: http://olln3wpar.bkt.clouddn.com/Mysql/jpg/7.png
-  [8]: http://olln3wpar.bkt.clouddn.com/Mysql/jpg00.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/1.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/2.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/3.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/5.png
+  [6]: https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/6.png
+  [7]: https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/7.png
+  [8]: https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg00.png

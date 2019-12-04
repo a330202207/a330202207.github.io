@@ -10,7 +10,7 @@ categories:
 MongoDB 介绍
 ----------------
 `MongoDB` 是一种 `NoSQL` 数据库，它在`数据存储`的形态上和 `MySQL` 这类`关系数据库`有本质区别。`MongoDB` 存储的基本对象是 `Document`，所以我们把它称为一种`文档数据库`，而文档的`集合`则组成了 `Collection`。与 `SQL` 的概念类比，`Collection` 对应于 `Table` 而 `Document` 对应于 `Row`。`Document` 使用一种 `BSON（Binary JSON`）结构来表达，`JSON` 大家都熟悉，像下面这样。
-![此处输入图片的描述][1]
+![][1]
 
 MongoDB 应用场景
 ----------------
@@ -76,7 +76,7 @@ enabled=1
 gpgkey=https://www.mongodb.org/static/pgp/server-3.4.asc
 ```
 
-![此处输入图片的描述][2]
+![][2]
  
  - 启动 yum 命令开始安装
 
@@ -91,7 +91,7 @@ vim /etc/selinux/config
 ```
 
 将 `SELINUX` 值设置为 `disabled`
-![此处输入图片的描述][3]
+![][3]
 
  - 启动 Mongodb (Mongodb 服务端的默认连接端口是 `27017`)
 
@@ -135,7 +135,7 @@ chkconfig mongod on
 ```
 find / -name mongo
 ```
-![此处输入图片的描述][4]
+![][4]
 
  - 连接客户端
 
@@ -143,7 +143,7 @@ find / -name mongo
 /usr/bin/mongo
 ```
 输入测试命令 `show dbs` 查看当前数据库有哪些
-![此处输入图片的描述][5]
+![][5]
 
  - 停止 MongoDB 服务器
 可以使用 `Ctrl + c` 或者输入 `exit` 退出 `MongoDB` 界面。
@@ -164,10 +164,11 @@ Server has startup warnings:
 2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] 
 ```
 这是因为没有配置 `MongoDB` 的`安全功能`，如`授权`和`身份验证`。当然只是为了学习的话，可以忽略它，但是生产环境`必须需要配置`。
-  [1]: http://olln3wpar.bkt.clouddn.com/MongoDB_JOSN.png
-  [2]: http://olln3wpar.bkt.clouddn.com/MongoDB_1.png
-  [3]: http://olln3wpar.bkt.clouddn.com/MongoDB_2.png
-  [4]: http://olln3wpar.bkt.clouddn.com/MongoDB_3.png
-  [5]: http://olln3wpar.bkt.clouddn.com/MongoDB_4.png
+
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_JOSN.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_1.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_2.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_3.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_4.png
 
  

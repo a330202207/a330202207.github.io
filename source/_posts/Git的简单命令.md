@@ -9,7 +9,7 @@ categories:
 
 工作原理：
 ----------------
-![](http://olln3wpar.bkt.clouddn.com/image/Git/git.png)
+![](https://ned.oss-cn-beijing.aliyuncs.com/image/Git/git.png)
 
 **Workspace（`工作区`）：**
 执行 `git add *` 命令就把改动提交到了`暂存区`，执行 `git pull` 命令将远程仓库的数据拉到当前分支并合并，执行 `git checkout [branch-name]` 切换分支

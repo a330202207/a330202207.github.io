@@ -11,39 +11,39 @@ MongoDB 的基本命令
 
 1.db.help()
 查看命令提示
-[][1]
+![][1]
 
 2.db
 查看当前所在数据库的名字
-[][2]
+![][2]
 
 3.use
 `use` + `数据库名`，表示`切换`或是`创建`数据库。和 `MySQL` 中 `use` 的唯一不同点，就是当数据库`不存在`的时候，`MongoDB` 中的 `use` 可以`创建`数据库
-[][3]
+![][3]
 
 4.show dbs
 显示数据库，需要注意的是 `show dbs`，只会显示有数据的库，没有数据的库，是不会显示的。下图中，`test` 数据库中，开始没有数据，所以不会显示，当我插入一条数据库后，`show dbs` 就会显示它
-[][4]
+![][4]
 
 5.db.dropDatabase()
 `删除`当前数据
-[][5]
+![][5]
 
 6.db.stats()
 显示当前 `db` 状态
-[][6]
+![][6]
 
 7.db.version()
 显示当前 `db` 版本
-[][7]
+![][7]
 
 8.db.getMongo()
 查看当前 `db` 的链接机器地址
-[][8]
+![][8]
 
 9.MongoDB 对支持 JavaScript 
 因为 `MongoDB` 支持 `JavaScript`，所以可以直接在命令提示中输入 `js` 代码
-[][9]
+![][9]
 
 10.清空屏幕
 `cls` 命令
@@ -60,8 +60,8 @@ MongoDB 的数据结构类型
 |Index(索引)         | Index(索引)      |
 |Table  joins(表连接)| 不支持           |
 |primary key(主键)   |primary key(MongoDB自动将_id字段设置为主键)|
-[][10]
-[][11]
+![][10]
+![][11]
 
 `BSON` 类型：
 
@@ -102,16 +102,17 @@ MongoDB 的数据结构类型
 
 
 **相关文档：https://docs.mongodb.com/manual/reference/bson-types/**
-  [1]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png
-  [2]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png
-  [3]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png
-  [4]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png
-  [5]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png
-  [6]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/6.png
-  [7]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/7.png
-  [8]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/8.png
-  [9]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/9.png
-  [10]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/10.png
-  [11]: http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/11.png
+
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/1.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/2.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/3.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/4.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/5.png
+  [6]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/6.png
+  [7]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/7.png
+  [8]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/8.png
+  [9]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/9.png
+  [10]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/10.png
+  [11]: https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/11.png
 
   

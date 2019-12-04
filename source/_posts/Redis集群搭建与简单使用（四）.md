@@ -11,7 +11,7 @@ categories:
  - VMware版本号：12.0.0 
  - CentOS版本：7.0
  - 三台虚拟机(IP)：192.168.1.8、192.168.1.9、192.168.1.10    
-![图片描述][1]
+![][1]
 
 安装 Redis 
 ----------------
@@ -78,7 +78,7 @@ $ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7
 $ ps -ef | grep redis           //redis是否启动成功
 $ netstat -tnlp | grep redis    //监听redis端口
 ```
-![图片描述][2]
+![][2]
 `注`：确保每个节点没有配置错误，并且启动起来
 
 
@@ -113,9 +113,9 @@ $ gem install redis
 $ /usr/local/redis-3.2.6/src/redis-trib.rb  create  --replicas  1  192.168.1.8:7000 192.168.1.8:7001  192.168.1.8:7002 192.168.1.9:7006  192.168.1.9:7004  192.168.1.9:7005 192.168.1.10:7006 192.168.1.10:7007 192.168.1.10:7008
 ```
 其中，前三个 `ip:port` 为第一台机器的节点，中间三个为第二台机器，最后三个为第三台机器
-![图片描述][3]
+![][3]
  输入 `yes`，然后出现如下内容，说明`安装成功`
-![图片描述][4]
+![][4]
 
 集群验证
 ----------------
@@ -128,18 +128,18 @@ $ /usr/local/redis-3.2.6/src/redis-cli -h 192.168.1.8 -c -p 7000
 ```
 192.168.1.9:7004> set name redis
 ```
-![图片描述][5]
-
 然后在另两台`7000、7007端口`，查看 `key` 为 `name` 的内容
+![][5]
+
 ```
 192.168.1.8:7000> get name
 ```
-![图片描述][6]
+![][6]
 
 ```
 192.168.1.10:7007> get name
 ```
-![图片描述][7]
+![][7]
 
 说明`集群运作正常`
 
@@ -168,13 +168,13 @@ $ /usr/local/redis-3.2.6/src/redis-cli -h 192.168.1.8 -c -p 7000
 [Redis持久化（五）][10]
 
 
-  [1]: /img/bVJBNY
-  [2]: /img/bVJBUO
-  [3]: /img/bVJBZL
-  [4]: /img/bVJBZZ
-  [5]: /img/bVJB1e
-  [6]: /img/bVJB1V
-  [7]: /img/bVJB2c
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-34-1.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-34-2.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-34-3.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-34-4.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-5.png
+  [6]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-7.png
+  [7]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-8.png
   [8]: https://segmentfault.com/a/1190000008420258
   [9]: https://segmentfault.com/a/1190000008469182
   [10]: https://segmentfault.com/a/1190000008639459

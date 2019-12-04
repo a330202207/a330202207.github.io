@@ -51,7 +51,7 @@ mysql> set password for 'root'@'localhost'=password('123abc');
 ```
 `注`：`MySQL5.7` 默认安装了`密码安全检查插件（validate_password）`，默认密码检查策略要求密码必须包含：大小写字母、数字和特殊符号，并且长度不能少于8位。
 否则会提示ERROR 1819 (HY000): `Your password does not satisfy the current policy requirements`错误
-![此处输入图片的描述][3]
+![][3]
 详见 MySQL 官网密码策略详细说明：https://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy
 配置默认编码为 `utf8`：
 修改 `/etc/my.cnf` 配置文件，在 `[mysqld]` 下添加编码配置，配置完成后重启：
@@ -62,7 +62,7 @@ character_set_server=utf8
 init_connect='SET NAMES utf8'
 [root@localhost ~]# systemctl restart mysqld    # 重启 MySQL
 ```
-![此处输入图片的描述][6]
+![][6]
 设置开机启动：
 ```
 [root@localhost ~]# systemctl enable mysqld
@@ -78,7 +78,7 @@ socket 文件：`/var/run/mysqld/mysqld.pid`
 ```
 [root@localhost ~]# systemctl status firewalld
 ```
-![此处输入图片的描述][1]
+![][1]
 如果显示 `active (running)`，则需要调整防火墙规则的配置。
 
 修改 `/etc/firewalld/zones/public.xml`文件，在zone一节中增加
@@ -91,7 +91,7 @@ socket 文件：`/var/run/mysqld/mysqld.pid`
 <zone>
 [root@localhost ~]# systemctl reload firewalld
 ```
-![此处输入图片的描述][2]
+![][2]
 修改 `Nginx` 配置：
 ```
 [root@localhost ~]# vim /etc/nginx/nginx.conf
@@ -111,7 +111,7 @@ location ~ .php$ {
     include fastcgi_params;
 }
 ```
-![此处输入图片的描述][4]
+![][4]
 配置完成重启 `Nginx`：
 ```
 [root@localhost ~]# systemctl start nginx    # 启动 Nginx
@@ -132,10 +132,11 @@ location ~ .php$ {
 
  - 在 `/usr/share/nginx/html` 文件下创建php文件，输出 `phpinfo` 信息
  - 浏览器访问 `http://<内网IP地址>/phpinfo.php`，如果看到 PHP 信息，说明`安装成功`
- ![此处输入图片的描述][5]
-  [1]: http://olln3wpar.bkt.clouddn.com/LNMP_1.png
-  [2]: http://olln3wpar.bkt.clouddn.com/LNMP_2.png
-  [3]: http://olln3wpar.bkt.clouddn.com/LNMP_11.png
-  [4]: http://olln3wpar.bkt.clouddn.com/LNMP_12.png
-  [5]: http://olln3wpar.bkt.clouddn.com/LNMP_13.png
-  [6]: http://olln3wpar.bkt.clouddn.com/LNMP_15.png
+ ![][5]
+ 
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/LNMP_1.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/LNMP_2.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/LNMP_11.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/LNMP_12.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/LNMP_13.png
+  [6]: https://ned.oss-cn-beijing.aliyuncs.com/LNMP_15.png

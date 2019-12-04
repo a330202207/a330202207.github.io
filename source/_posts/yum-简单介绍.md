@@ -184,4 +184,4 @@ distroverpkg=centos-release
 [CentOS更改yum源与更新系统][1]
 
 
-  [1]: http://www.zhazhablog.com/2017/03/07/CentOS%E6%9B%B4%E6%94%B9yum%E6%BA%90%E4%B8%8E%E6%9B%B4%E6%96%B0%E7%B3%BB%E7%BB%9F/
+  [1]: https://www.upupjie.com/2017/03/07/CentOS%E6%9B%B4%E6%94%B9yum%E6%BA%90%E4%B8%8E%E6%9B%B4%E6%96%B0%E7%B3%BB%E7%BB%9F/

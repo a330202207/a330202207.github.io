@@ -34,8 +34,8 @@ categories:
 [root@localhost ~]yum -y install php70w-pecl-mongo   # 安装 PHP 对应版本的 MongoDB 扩展
 [root@localhost ~]systemctl restart nginx            # 重新启动 Nginx
 ```
-![此处输入图片的描述][1]
-![此处输入图片的描述][2]
+![][1]
+![][2]
 
 
 二、pecl 安装
@@ -54,7 +54,7 @@ configure: error: Cannot find OpenSSL's <evp.h>
 ERROR: `/var/tmp/mongodb/configure --with-php-config=/usr/bin/php-config' failed
 ```
 到这一步又会`报错`，需要我们安装 `openssl `，安装完成后继续执行上次`未执行成功`的命令
-![此处输入图片的描述][7]
+![][7]
 
 ```
 [root@localhost ~]# yum -y install openssl openssl-devel
@@ -62,12 +62,12 @@ ERROR: `/var/tmp/mongodb/configure --with-php-config=/usr/bin/php-config' failed
 [root@localhost ~]# systemctl restart nginx             # 重新启动 Nginx
 ```
 安装完成后在 `PHP` 配置文件 `php.ini` 里面加载 `MongoDB` 扩展
-![此处输入图片的描述][5]
+![][5]
  - 安装完成后重启服务器 `Nginx` 或者 `Apache`
  - 浏览器访问 `index.php` 文件,输出 `phpinfo` 信息，如果有 `MongoDB` 信息，则安装成功
 
 
-![此处输入图片的描述][6]
+![][6]
 
 
 三、源码编译安装
@@ -88,7 +88,7 @@ Zend Extension Api No:   320151012
 configure: error: Cannot find OpenSSL's <evp.h>
 ```
 到了这步`又是熟悉的味道又是熟悉的感觉`，需要我们安装 `openssl `，安装完成后继续执行上次`未执行成功`的命令
-![此处输入图片的描述][3]
+![][3]
 
 ```
 [root@localhost mongodb-1.2.8]# yum -y install openssl openssl-devel
@@ -101,9 +101,9 @@ configure: error: Cannot find OpenSSL's <evp.h>
 在编译扩展时，如果安装有多个 PHP 版本，可以在配置时用 `--with-php-config` 选项来指定使用哪一个版本编译，该选项指定了相对应的 `php-config` 脚本的路径。
 
 `编译成功`如下图
-![此处输入图片的描述][4]
+![][4]
 此时在 `PHP` 配置文件 `php.ini` 里面加载 `MongoDB` 扩展
-![此处输入图片的描述][5]
+![][5]
 
  - 重启服务器 `Nginx` 或者 `Apache`
  - 浏览器访问 `index.php` 文件,输出 `phpinfo` 信息，如果有 `MongoDB` 信息，则安装成功
@@ -112,7 +112,7 @@ configure: error: Cannot find OpenSSL's <evp.h>
  ```
  [root@localhost mongodb-1.2.8]# systemctl restart nginx   # 重新启动 Nginx
  ```
-![此处输入图片的描述][6]
+![][6]
 
 
 **总结：**
@@ -131,10 +131,10 @@ PHP5.x 可以使用 `mongodb` 扩展。但是 PHP7.x  不可以使用 `mongo` �
 **写在最后：**
 如果是自己学习的话还是推荐 `yum 安装`，因为在你安装过程中会出现`缺少各种依赖`的`报错`。
 
-  [1]: http://olln3wpar.bkt.clouddn.com/php_extension_1.png
-  [2]: http://olln3wpar.bkt.clouddn.com/php_extension_2.png
-  [3]: http://olln3wpar.bkt.clouddn.com/php_extension_4.png
-  [4]: http://olln3wpar.bkt.clouddn.com/php_extension_7.png
-  [5]: http://olln3wpar.bkt.clouddn.com/php_extension_5.png
-  [6]: http://olln3wpar.bkt.clouddn.com/php_extension_6.png
-  [7]: http://olln3wpar.bkt.clouddn.com/php_extension_3_1.png
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/php_extension_1.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/php_extension_2.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/php_extension_4.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/php_extension_7.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/php_extension_5.png
+  [6]: https://ned.oss-cn-beijing.aliyuncs.com/php_extension_6.png
+  [7]: https://ned.oss-cn-beijing.aliyuncs.com/php_extension_3_1.png

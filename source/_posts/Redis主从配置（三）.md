@@ -70,7 +70,7 @@ $ /usr/local/redis-3.2.8/src/redis-server /usr/local/redis-3.2.8/redis.conf
 $ ps -ef | grep redis           //redis是否启动成功
 $ netstat -tnlp | grep redis    //监听redis端口
 ```
-![图片描述][1]
+![][1]
 
 客户端连接-测试同步
 ----------------
@@ -93,11 +93,11 @@ $ /usr/local/redis-3.2.8/src/redis-cli -p 8001
 127.0.0.1:8000> info Replication 
 ```
 
-![图片描述][2]
+![][2]
 ```
 127.0.0.1:8001> info Replication 
 ```
-![图片描述][3]
+![][3]
 
 在`主机`上执行命令
 
@@ -110,7 +110,7 @@ $ /usr/local/redis-3.2.8/src/redis-cli -p 8001
 ```
 127.0.0.1:8001> get name
 ```
-![图片描述][4]
+![][4]
 
 说明`主从配置成功`
 PS：计算机不存在`玄学` /捂脸
@@ -123,9 +123,9 @@ PS：计算机不存在`玄学` /捂脸
 [Redis集群搭建与简单使用（四）][6]
 
 
-  [1]: /img/bVJGHd
-  [2]: /img/bVJGSR
-  [3]: /img/bVJGTN
-  [4]: /img/bVJGWL
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-1.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-2.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-3.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-4.png
   [5]: https://segmentfault.com/a/1190000008420258
   [6]: https://segmentfault.com/a/1190000008448919

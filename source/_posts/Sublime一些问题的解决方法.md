@@ -7,9 +7,9 @@ tags:
 ##一、如何关闭Sublime的自动更新 ##
 
 打开`Sublime`，找到`Preferences - Settings`(配置文件)
-![图片描述][1]
+![][1]
 打开后类似这样
-![图片描述][2]
+![][2]
 
 在最后的花括号（`}`）前添加一句：
 
@@ -45,5 +45,5 @@ import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.
 
  
 
-  [1]: /img/bVGJsx
-  [2]: /img/bVGJsH
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/sublime-1.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/sublime-2.png

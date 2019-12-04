@@ -64,13 +64,13 @@ PhpStorm 配置
 
 
   [1]: http://pear.php.net/go-pear.phar
-  [2]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/1.png
-  [3]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/2.png
-  [4]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/3.png
-  [5]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/4.png
-  [6]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/5.png
-  [7]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/6.png
-  [8]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/7.png
-  [9]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/8.png
-  [10]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/9.png
-  [11]: http://olln3wpar.bkt.clouddn.com/image/PHP_CodeSniffer/10.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/1.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/2.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/3.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/4.png
+  [6]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/5.png
+  [7]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/6.png
+  [8]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/7.png
+  [9]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/8.png
+  [10]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/9.png
+  [11]: https://ned.oss-cn-beijing.aliyuncs.com/image/PHP_CodeSniffer/10.png

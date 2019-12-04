@@ -25,7 +25,7 @@ categories:
     执行命令：`git config --global credential.helper store`
     上述命令会在`.gitconfig`文件(`.gitconfig`与`.git-credentials`在同目录下)末尾添加如下配置:
 
-![此处输入图片的描述][1]
+![][1]
 经过上述三步配置之后, 你push代码到github时, 便无需再输入用户名密码了
   
 
@@ -47,4 +47,4 @@ categories:
 **总结：**
 方案一与方案二都是创建`.git-credential`文件并写入用户信息，一个是手动创建，一个命令创建。
 
-  [1]: http://olln3wpar.bkt.clouddn.com/git_1.png
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com//git_1.png
