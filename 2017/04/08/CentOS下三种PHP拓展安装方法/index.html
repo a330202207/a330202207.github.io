@@ -120,22 +120,22 @@ var _hmt = _hmt || [];
 </ul>
 <pre><code>[root@localhost ~]yum search mongodb|grep php        # 搜索 yum 源里面 MongoDB 拓展
 [root@localhost ~]yum -y install php70w-pecl-mongo   # 安装 PHP 对应版本的 MongoDB 扩展
-[root@localhost ~]systemctl restart nginx            # 重新启动 Nginx</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/php_extension_1.png" alt="此处输入图片的描述"><br><img src="http://olln3wpar.bkt.clouddn.com/php_extension_2.png" alt="此处输入图片的描述"></p>
+[root@localhost ~]systemctl restart nginx            # 重新启动 Nginx</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/php_extension_1.png" alt><br><img src="https://ned.oss-cn-beijing.aliyuncs.com/php_extension_2.png" alt></p>
 <h2 id="二、pecl-安装"><a href="#二、pecl-安装" class="headerlink" title="二、pecl 安装"></a>二、pecl 安装</h2><p>官方文档：<a href="http://php.net/manual/zh/mongodb.installation.pecl.php" target="_blank" rel="noopener">http://php.net/manual/zh/mongodb.installation.pecl.php</a></p>
 <pre><code>[root@localhost ~]# pecl install mongodb
 -bash: pecl: 未找到命令</code></pre><p>直接输入 <code>pecl install mongodb</code> 会报错，说明 <code>pecl</code> 我们没有安装，安装 <code>pecl</code></p>
 <pre><code>[root@localhost ~]# yum -y install php70w-pear
 [root@localhost ~]# pecl install mongodb
 configure: error: Cannot find OpenSSL&#39;s &lt;evp.h&gt;
-ERROR: `/var/tmp/mongodb/configure --with-php-config=/usr/bin/php-config&#39; failed</code></pre><p>到这一步又会<code>报错</code>，需要我们安装 <code>openssl</code>，安装完成后继续执行上次<code>未执行成功</code>的命令<br><img src="http://olln3wpar.bkt.clouddn.com/php_extension_3_1.png" alt="此处输入图片的描述"></p>
+ERROR: `/var/tmp/mongodb/configure --with-php-config=/usr/bin/php-config&#39; failed</code></pre><p>到这一步又会<code>报错</code>，需要我们安装 <code>openssl</code>，安装完成后继续执行上次<code>未执行成功</code>的命令<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/php_extension_3_1.png" alt></p>
 <pre><code>[root@localhost ~]# yum -y install openssl openssl-devel
 [root@localhost ~]# pecl install mongodb
-[root@localhost ~]# systemctl restart nginx             # 重新启动 Nginx</code></pre><p>安装完成后在 <code>PHP</code> 配置文件 <code>php.ini</code> 里面加载 <code>MongoDB</code> 扩展<br><img src="http://olln3wpar.bkt.clouddn.com/php_extension_5.png" alt="此处输入图片的描述"></p>
+[root@localhost ~]# systemctl restart nginx             # 重新启动 Nginx</code></pre><p>安装完成后在 <code>PHP</code> 配置文件 <code>php.ini</code> 里面加载 <code>MongoDB</code> 扩展<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/php_extension_5.png" alt></p>
 <ul>
 <li>安装完成后重启服务器 <code>Nginx</code> 或者 <code>Apache</code></li>
 <li>浏览器访问 <code>index.php</code> 文件,输出 <code>phpinfo</code> 信息，如果有 <code>MongoDB</code> 信息，则安装成功</li>
 </ul>
-<p><img src="http://olln3wpar.bkt.clouddn.com/php_extension_6.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/php_extension_6.png" alt></p>
 <h2 id="三、源码编译安装"><a href="#三、源码编译安装" class="headerlink" title="三、源码编译安装"></a>三、源码编译安装</h2><p>源码编译包下载列表：<a href="https://pecl.php.net/packages.php" target="_blank" rel="noopener">https://pecl.php.net/packages.php</a><br>Mongodb包下载地址：<a href="https://pecl.php.net/package/mongodb" target="_blank" rel="noopener">https://pecl.php.net/package/mongodb</a></p>
 <pre><code>[root@localhost ~]# wget http://pecl.php.net/get/mongodb-1.2.8.tgz  #下载源码包
 [root@localhost ~]# tar zxf mongodb-1.2.8.tgz  #解压
@@ -147,18 +147,18 @@ PHP Api Version:         20151012
 Zend Module Api No:      20151012
 Zend Extension Api No:   320151012
 [root@localhost mongodb-1.2.8]# ./configure --with-php-config=/usr/bin/php-config
-configure: error: Cannot find OpenSSL&#39;s &lt;evp.h&gt;</code></pre><p>到了这步<code>又是熟悉的味道又是熟悉的感觉</code>，需要我们安装 <code>openssl</code>，安装完成后继续执行上次<code>未执行成功</code>的命令<br><img src="http://olln3wpar.bkt.clouddn.com/php_extension_4.png" alt="此处输入图片的描述"></p>
+configure: error: Cannot find OpenSSL&#39;s &lt;evp.h&gt;</code></pre><p>到了这步<code>又是熟悉的味道又是熟悉的感觉</code>，需要我们安装 <code>openssl</code>，安装完成后继续执行上次<code>未执行成功</code>的命令<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/php_extension_4.png" alt></p>
 <pre><code>[root@localhost mongodb-1.2.8]# yum -y install openssl openssl-devel
 [root@localhost mongodb-1.2.8]# ./configure --with-php-config=/usr/bin/php-config
 # 确保自己安装了 gcc gcc++ 如果没有安装 yum -y install gcc gcc++
 [root@localhost mongodb-1.2.8]# make &amp;&amp; make install # 编译</code></pre><p>说明：<code>php-config</code> 是一个简单的命令行脚本用于<code>获取</code>所安装的 <code>PHP 配置</code>的信息。</p>
 <p>在编译扩展时，如果安装有多个 PHP 版本，可以在配置时用 <code>--with-php-config</code> 选项来指定使用哪一个版本编译，该选项指定了相对应的 <code>php-config</code> 脚本的路径。</p>
-<p><code>编译成功</code>如下图<br><img src="http://olln3wpar.bkt.clouddn.com/php_extension_7.png" alt="此处输入图片的描述"><br>此时在 <code>PHP</code> 配置文件 <code>php.ini</code> 里面加载 <code>MongoDB</code> 扩展<br><img src="http://olln3wpar.bkt.clouddn.com/php_extension_5.png" alt="此处输入图片的描述"></p>
+<p><code>编译成功</code>如下图<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/php_extension_7.png" alt><br>此时在 <code>PHP</code> 配置文件 <code>php.ini</code> 里面加载 <code>MongoDB</code> 扩展<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/php_extension_5.png" alt></p>
 <ul>
 <li>重启服务器 <code>Nginx</code> 或者 <code>Apache</code></li>
 <li>浏览器访问 <code>index.php</code> 文件,输出 <code>phpinfo</code> 信息，如果有 <code>MongoDB</code> 信息，则安装成功</li>
 </ul>
-<pre><code> [root@localhost mongodb-1.2.8]# systemctl restart nginx   # 重新启动 Nginx</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/php_extension_6.png" alt="此处输入图片的描述"></p>
+<pre><code> [root@localhost mongodb-1.2.8]# systemctl restart nginx   # 重新启动 Nginx</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/php_extension_6.png" alt></p>
 <p><strong>总结：</strong></p>
 <ul>
 <li><code>pecl 安装</code>和<code>源码编译安装</code>区别就是：方便参数调优。</li>

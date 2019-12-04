@@ -113,7 +113,7 @@ var _hmt = _hmt || [];
 		<h2 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h2><ul>
 <li>VMware版本号：12.0.0 </li>
 <li>CentOS版本：7.0</li>
-<li>三台虚拟机(IP)：192.168.1.8、192.168.1.9、192.168.1.10<br><img src="/img/bVJBNY" alt="图片描述"></li>
+<li>三台虚拟机(IP)：192.168.1.8、192.168.1.9、192.168.1.10<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-34-1.png" alt></li>
 </ul>
 <h2 id="安装-Redis"><a href="#安装-Redis" class="headerlink" title="安装 Redis "></a>安装 Redis </h2><p>下载，解压，编译:</p>
 <pre><code>$ cd /usr/local/
@@ -149,7 +149,7 @@ $ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7
 $ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7007/redis.conf
 $ /usr/local/redis-3.2.6/src/redis-server /usr/local/redis-3.2.6/redis_cluster/7008/redis.conf </code></pre><h2 id="检查各-Redis-启动情况"><a href="#检查各-Redis-启动情况" class="headerlink" title="检查各 Redis 启动情况"></a>检查各 Redis 启动情况</h2><pre><code>##第一台机器
 $ ps -ef | grep redis           //redis是否启动成功
-$ netstat -tnlp | grep redis    //监听redis端口</code></pre><p><img src="/img/bVJBUO" alt="图片描述"><br><code>注</code>：确保每个节点没有配置错误，并且启动起来</p>
+$ netstat -tnlp | grep redis    //监听redis端口</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-34-2.png" alt><br><code>注</code>：确保每个节点没有配置错误，并且启动起来</p>
 <h2 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h2><pre><code>$ firewall-cmd --state  ##查看防火墙状态
 running</code></pre><p><code>running</code> 说明防火墙是打开状态</p>
 <pre><code>$ systemctl stop firewalld  ##关闭防火墙
@@ -158,14 +158,13 @@ not running</code></pre><p><code>注</code>: <code>CentOS 7</code> 关闭防火�
 <h2 id="安装-Ruby"><a href="#安装-Ruby" class="headerlink" title="安装 Ruby"></a>安装 Ruby</h2><pre><code>$ yum -y install ruby ruby-devel rubygems rpm-build
 $ gem install redis</code></pre><p><code>注</code>:<code>创建集群</code>时需要安装 <code>Ruby</code> 运行<code>redis-trib.rb</code></p>
 <h2 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h2><p><code>Redis</code> 官方提供了 <code>redis-trib.rb</code> 这个工具，就在解压目录的 <code>src</code> 目录中</p>
-<pre><code>$ /usr/local/redis-3.2.6/src/redis-trib.rb  create  --replicas  1  192.168.1.8:7000 192.168.1.8:7001  192.168.1.8:7002 192.168.1.9:7006  192.168.1.9:7004  192.168.1.9:7005 192.168.1.10:7006 192.168.1.10:7007 192.168.1.10:7008</code></pre><p>其中，前三个 <code>ip:port</code> 为第一台机器的节点，中间三个为第二台机器，最后三个为第三台机器<br><img src="/img/bVJBZL" alt="图片描述"><br> 输入 <code>yes</code>，然后出现如下内容，说明<code>安装成功</code><br><img src="/img/bVJBZZ" alt="图片描述"></p>
+<pre><code>$ /usr/local/redis-3.2.6/src/redis-trib.rb  create  --replicas  1  192.168.1.8:7000 192.168.1.8:7001  192.168.1.8:7002 192.168.1.9:7006  192.168.1.9:7004  192.168.1.9:7005 192.168.1.10:7006 192.168.1.10:7007 192.168.1.10:7008</code></pre><p>其中，前三个 <code>ip:port</code> 为第一台机器的节点，中间三个为第二台机器，最后三个为第三台机器<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-34-3.png" alt><br> 输入 <code>yes</code>，然后出现如下内容，说明<code>安装成功</code><br><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-34-4.png" alt></p>
 <h2 id="集群验证"><a href="#集群验证" class="headerlink" title="集群验证"></a>集群验证</h2><p>在第一台机器上连接集群的<code>7000节点</code>，在另外一台连接<code>7004节点</code>，连接方式为：</p>
 <pre><code>##加参数 -C 可连接到集群，因为 redis.conf 将 bind 改为了ip地址，所以 -h 参数不可以省略，-p 参数为端口号
 $ /usr/local/redis-3.2.6/src/redis-cli -h 192.168.1.8 -c -p 7000  </code></pre><p>在<code>7004节点</code>执行命令：</p>
-<pre><code>192.168.1.9:7004&gt; set name redis</code></pre><p><img src="/img/bVJB1e" alt="图片描述"></p>
-<p>然后在另两台<code>7000、7007端口</code>，查看 <code>key</code> 为 <code>name</code> 的内容</p>
-<pre><code>192.168.1.8:7000&gt; get name</code></pre><p><img src="/img/bVJB1V" alt="图片描述"></p>
-<pre><code>192.168.1.10:7007&gt; get name</code></pre><p><img src="/img/bVJB2c" alt="图片描述"></p>
+<pre><code>192.168.1.9:7004&gt; set name redis</code></pre><p>然后在另两台<code>7000、7007端口</code>，查看 <code>key</code> 为 <code>name</code> 的内容<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-5.png" alt></p>
+<pre><code>192.168.1.8:7000&gt; get name</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-7.png" alt></p>
+<pre><code>192.168.1.10:7007&gt; get name</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-8.png" alt></p>
 <p>说明<code>集群运作正常</code></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>redis cluster</code>在设计的时候，就考虑到了去<code>中心化</code>、<code>去中间件</code>，也就是说，集群中的<code>每个节点</code>都是<code>平等关系</code>，都是<code>对等的</code>，<code>每个节点</code>都<code>保存</code>各自的<code>数据</code>和整个集群的状态。<code>每个节点</code>都和<code>其他所有节点</code>连接，而且这些连接<code>保持活跃</code>，这样就保证了我们<code>只需要连接</code>集群中的<code>任意一个节点</code>，就可以获取到<code>其他节点</code>的<code>数据</code>。</p>
 <p><code>Redis</code> 集群没有并使用传统的<code>一致性哈希来</code>分配数据，而是采用另外一种叫做<code>哈希槽</code>(hash slot)的方式来分配的。<code>redis cluster</code> 默认分配了 <code>16384</code> 个 <code>slot</code>，当我们 <code>set</code>一个 <code>key</code> 时，会用<code>CRC16算法</code>来取模得到所属的 <code>slot</code>，然后将这个 <code>key</code> 分到<code>哈希槽区间的节点</code>上，具体算法就是：<code>CRC16(key)</code> % <code>16384</code>。所以我们在测试的时候看到 <code>set</code> 和 <code>get</code> 的时候，直接跳转到了<code>7000端口</code>的节点。</p>

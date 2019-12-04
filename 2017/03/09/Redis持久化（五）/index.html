@@ -118,13 +118,13 @@ var _hmt = _hmt || [];
 </ul>
 <p>两种持久化可以同时开启</p>
 <h2 id="RDB-Redis-DataBase-持久化方式"><a href="#RDB-Redis-DataBase-持久化方式" class="headerlink" title="RDB(Redis DataBase)持久化方式"></a>RDB(Redis DataBase)持久化方式</h2><p><code>RDB 持久化</code>是指在<code>指定的时间间隔内</code>将<code>内存中</code>的<code>数据</code>快照<code>写入磁盘</code>，实际操作过程是 <code>fork</code>一个子进程，先将<code>数据</code>写入<code>临时文件</code>，写入成功后，再<code>替换</code>之前的文件，用二进制压缩存储</p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-03-10-09-21-1.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-03-10-09-21-1.png" alt></p>
 <p>Redis 将数据库快照保存在名字为 <code>dump.rdb</code> 的二进制文件中</p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-1.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-1.png" alt></p>
 <p>RDB 持久化快照名称与路径(redis.conf 文件)：</p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-2.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-2.png" alt></p>
 <p>RDB持久化备份频率：</p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-3.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-3.png" alt></p>
 <pre><code>$ save 900 1       #900秒内如果超过1个key被修改，则发起快照保存 
 $ save 300 10      #300秒内如果超过10个key被修改，则发起快照保存 
 $ save 60 10000    #60秒内如果超过10000个key被修改，则发起快照保存</code></pre><p><strong>优点：</strong></p>
@@ -140,19 +140,19 @@ $ save 60 10000    #60秒内如果超过10000个key被修改，则发起快照�
 <li>由于 <code>RDB</code> 是通过 <code>fork</code>子进程来协助完成数据持久化工作的，因此，如果当<code>数据较大</code>时，可能会导致整个服务器<code>停止</code>服务<code>几百毫秒</code>，甚至是<code>1秒钟</code></li>
 </ol>
 <p>手动发起RDB持久化方式：<br>输入 <code>save</code> </p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-4.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-4.png" alt></p>
 <p>或者 <code>bgsave</code> (bgsave 是开启单独线程) </p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-5.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-5.png" alt></p>
 <h2 id="AOF-Append-Only-File-持久化方式"><a href="#AOF-Append-Only-File-持久化方式" class="headerlink" title="AOF(Append Only File)持久化方式"></a>AOF(Append Only File)持久化方式</h2><p><code>AOF 持久化</code>以日志的形式记录服务器所处理的<code>每一个写、删除操作，查询操作</code>，当服务器<code>重启</code>的时候会<code>重新执行</code>这些命令来<code>恢复</code>原始的数据</p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-03-10-09-21-2.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-03-10-09-21-2.png" alt></p>
 <p>开启 <code>AOF</code> 持久化(redis.conf)</p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-7.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-7.png" alt></p>
 <p><code>注：</code>重启 Redis 才生效</p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-8.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-8.png" alt></p>
 <p>AOF 持久化名称与路径：</p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-9.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-9.png" alt></p>
 <p>AOF 持久化备份频率：</p>
-<p><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-10.png" alt="此处输入图片的描述"></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-10.png" alt></p>
 <pre><code># 每次有新命令追加到 AOF 文件时就执行一次同步 ：非常慢，也非常安全
 $ always 
 
@@ -162,7 +162,7 @@ $ everysec
 
 # 从不同步：将数据交给操作系统来处理。更快，也更不安全的选择
 $ no</code></pre><p>AOF 持久化备份优化:<br>因为 <code>AOF</code> 的运作方式是不断地将命令追加到文件的末尾， 所以随着写入命令的不断增加， <code>AOF</code> 文件的体积也会变得越来越大<br>例如， 如果你对一个计数器调用了 <code>100</code> 次 <code>INCR</code> ， 那么仅仅是为了保存这个计数器的当前值， <code>AOF</code> 文件就需要使用 100 条记录（entry）。然而在实际上， 只使用一条 <code>SET</code> 命令已经足以保存计数器的当前值了， 其余 99 条记录实际上都是多余的</p>
-<p>输入 <code>bgrewriteaof</code> 命令优化 <code>AOF</code> 文件<br><img src="http://olln3wpar.bkt.clouddn.com/2017-3-9-20-33-11.png" alt="此处输入图片的描述"></p>
+<p>输入 <code>bgrewriteaof</code> 命令优化 <code>AOF</code> 文件<br><img src="https://ned.oss-cn-beijing.aliyuncs.com//2017-3-9-20-33-11.png" alt></p>
 <p>AOF 文件损坏：<br>服务器可能在程序正在对 <code>AOF</code> 文件进行写入时<code>宕机</code>， 宕机会造成了 <code>AOF</code> 文件出错（corrupt）， 那么 <code>Redis</code> 在重启时会<code>拒绝载入</code>这个 <code>AOF</code> 文件， 从而确保<code>数据</code>的<code>一致性</code>不会被破坏。</p>
 <p>修复出错的 <code>AOF</code> 文件：</p>
 <ul>

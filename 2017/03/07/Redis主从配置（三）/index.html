@@ -141,7 +141,7 @@ $ firewall-cmd --state
 not running                 ##防火墙关闭</code></pre><p><code>注</code>: <code>CentOS 7</code> 关闭防火墙与 <code>CentOS 6</code> 有所不同</p>
 <h2 id="启动-Redis"><a href="#启动-Redis" class="headerlink" title="启动 Redis"></a>启动 Redis</h2><pre><code>$ /usr/local/redis-3.2.8/src/redis-server /usr/local/redis-3.2.8/redis.conf</code></pre><h2 id="检查各-Redis-启动情况"><a href="#检查各-Redis-启动情况" class="headerlink" title="检查各 Redis 启动情况"></a>检查各 Redis 启动情况</h2><pre><code>##192.168.29.18(主)
 $ ps -ef | grep redis           //redis是否启动成功
-$ netstat -tnlp | grep redis    //监听redis端口</code></pre><p><img src="/img/bVJGHd" alt="图片描述"></p>
+$ netstat -tnlp | grep redis    //监听redis端口</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-1.png" alt></p>
 <h2 id="客户端连接-测试同步"><a href="#客户端连接-测试同步" class="headerlink" title="客户端连接-测试同步"></a>客户端连接-测试同步</h2><pre><code>##主 -p 端口号 -a 主机验证密码 -h 默认为127.0.0.1
 $ /usr/local/redis-3.2.8/src/redis-cli -p 8000 -a root  
 
@@ -149,11 +149,11 @@ $ /usr/local/redis-3.2.8/src/redis-cli -p 8000 -a root
 $ /usr/local/redis-3.2.8/src/redis-cli -p 8001            </code></pre><p><code>注:</code><br>1、因为 <code>redis.conf</code> 文件中<code>bind</code>参数为：<code>192.168.29.19 127.0.0.1</code><br>所以这里不用添加参数：<code>/usr/local/redis-3.2.8/src/redis-cli -h 192.168.29.19 -p 8000 -a root</code><br>2、从机<code>redis.conf</code> 文件中<code>masterauth</code>参数<code>已配置过</code>验证密码，所以不用添加参数 <code>-a</code></p>
 <p>查看连接状态</p>
 <pre><code>##主
-127.0.0.1:8000&gt; info Replication </code></pre><p><img src="/img/bVJGSR" alt="图片描述"></p>
-<pre><code>127.0.0.1:8001&gt; info Replication </code></pre><p><img src="/img/bVJGTN" alt="图片描述"></p>
+127.0.0.1:8000&gt; info Replication </code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-2.png" alt></p>
+<pre><code>127.0.0.1:8001&gt; info Replication </code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-3.png" alt></p>
 <p>在<code>主机</code>上执行命令</p>
 <pre><code>127.0.0.1:8000&gt; set name redis</code></pre><p>在<code>从机</code>上查看</p>
-<pre><code>127.0.0.1:8001&gt; get name</code></pre><p><img src="/img/bVJGWL" alt="图片描述"></p>
+<pre><code>127.0.0.1:8001&gt; get name</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/2017-03-07-21-30-4.png" alt></p>
 <p>说明<code>主从配置成功</code><br>PS：计算机不存在<code>玄学</code> /捂脸</p>
 <hr>
 <p><strong>相关链接：</strong></p>

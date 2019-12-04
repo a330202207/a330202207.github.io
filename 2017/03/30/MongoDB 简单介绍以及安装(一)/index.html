@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
 		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-介绍"><span class="toc-number">1.</span> <span class="toc-text">MongoDB 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-应用场景"><span class="toc-number">2.</span> <span class="toc-text">MongoDB 应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-安装"><span class="toc-number">3.</span> <span class="toc-text">MongoDB 安装</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#包含mongod守护程序和关联的配置和init脚本"><span class="toc-number"></span> <span class="toc-text">包含mongod守护程序和关联的配置和init脚本</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#包含mongos守护程序"><span class="toc-number"></span> <span class="toc-text">包含mongos守护程序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#包含mongo-shell，它是一个连接mongodb的命令行客户端，允许用户直接输入nosql语法管理数据库"><span class="toc-number"></span> <span class="toc-text">包含mongo shell，它是一个连接mongodb的命令行客户端，允许用户直接输入nosql语法管理数据库</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#包含以下工具的MongoDB：数据导入、导出、备份、恢复等等"><span class="toc-number"></span> <span class="toc-text">包含以下工具的MongoDB：数据导入、导出、备份、恢复等等</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Centos6-启动"><span class="toc-number"></span> <span class="toc-text">Centos6 启动</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Centos7-启动"><span class="toc-number"></span> <span class="toc-text">Centos7 启动</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#停止-Mongodb-服务"><span class="toc-number"></span> <span class="toc-text">停止 Mongodb 服务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#重启-Mongodb"><span class="toc-number"></span> <span class="toc-text">重启 Mongodb</span></a>
 		</div>
 		
-		<h2 id="MongoDB-介绍"><a href="#MongoDB-介绍" class="headerlink" title="MongoDB 介绍"></a>MongoDB 介绍</h2><p><code>MongoDB</code> 是一种 <code>NoSQL</code> 数据库，它在<code>数据存储</code>的形态上和 <code>MySQL</code> 这类<code>关系数据库</code>有本质区别。<code>MongoDB</code> 存储的基本对象是 <code>Document</code>，所以我们把它称为一种<code>文档数据库</code>，而文档的<code>集合</code>则组成了 <code>Collection</code>。与 <code>SQL</code> 的概念类比，<code>Collection</code> 对应于 <code>Table</code> 而 <code>Document</code> 对应于 <code>Row</code>。<code>Document</code> 使用一种 <code>BSON（Binary JSON</code>）结构来表达，<code>JSON</code> 大家都熟悉，像下面这样。<br>![此处输入图片的描述][1]</p>
+		<h2 id="MongoDB-介绍"><a href="#MongoDB-介绍" class="headerlink" title="MongoDB 介绍"></a>MongoDB 介绍</h2><p><code>MongoDB</code> 是一种 <code>NoSQL</code> 数据库，它在<code>数据存储</code>的形态上和 <code>MySQL</code> 这类<code>关系数据库</code>有本质区别。<code>MongoDB</code> 存储的基本对象是 <code>Document</code>，所以我们把它称为一种<code>文档数据库</code>，而文档的<code>集合</code>则组成了 <code>Collection</code>。与 <code>SQL</code> 的概念类比，<code>Collection</code> 对应于 <code>Table</code> 而 <code>Document</code> 对应于 <code>Row</code>。<code>Document</code> 使用一种 <code>BSON（Binary JSON</code>）结构来表达，<code>JSON</code> 大家都熟悉，像下面这样。<br>![][1]</p>
 <h2 id="MongoDB-应用场景"><a href="#MongoDB-应用场景" class="headerlink" title="MongoDB 应用场景"></a>MongoDB 应用场景</h2><ul>
 <li>游戏场景，使用 MongoDB 存储游戏用户信息，用户的装备、积分等直接以内嵌文档的形式存储，方便查询、更新</li>
 <li>物流场景，使用 MongoDB 存储订单信息，订单状态在运送过程中会不断更新，以 MongoDB 内嵌数组的形式来存储，一次查询就能将订单所有的变更读取出来</li>
@@ -137,7 +137,7 @@ var _hmt = _hmt || [];
  - 将下面内容复制到源文件中
 </code></pre><p>[mongodb-org-3.4]<br>name=MongoDB Repository<br>baseurl=<a href="https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.4/x86_64/" target="_blank" rel="noopener">https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.4/x86_64/</a><br>gpgcheck=1<br>enabled=1<br>gpgkey=<a href="https://www.mongodb.org/static/pgp/server-3.4.asc" target="_blank" rel="noopener">https://www.mongodb.org/static/pgp/server-3.4.asc</a></p>
 <pre><code>
-![此处输入图片的描述][2]
+![][2]
 
  - 启动 yum 命令开始安装
 </code></pre><p>yum install -y mongodb-org</p>
@@ -146,7 +146,7 @@ var _hmt = _hmt || [];
 </code></pre><p>vim /etc/selinux/config</p>
 <pre><code>
 将 `SELINUX` 值设置为 `disabled`
-![此处输入图片的描述][3]
+![][3]
 
  - 启动 Mongodb (Mongodb 服务端的默认连接端口是 `27017`)
 </code></pre><h1 id="Centos6-启动"><a href="#Centos6-启动" class="headerlink" title="Centos6 启动"></a>Centos6 启动</h1><p>$ service mongod start</p>
@@ -165,23 +165,24 @@ var _hmt = _hmt || [];
 <pre><code>
  - 找到 MongoDB 客户端
 </code></pre><p>find / -name mongo</p>
-<pre><code>![此处输入图片的描述][4]
+<pre><code>![][4]
 
  - 连接客户端
 </code></pre><p>/usr/bin/mongo</p>
 <pre><code>输入测试命令 `show dbs` 查看当前数据库有哪些
-![此处输入图片的描述][5]
+![][5]
 
  - 停止 MongoDB 服务器
 可以使用 `Ctrl + c` 或者输入 `exit` 退出 `MongoDB` 界面。
 
 `注`：进入 `MongoDB` 界面会出现`警告`</code></pre><p>Server has startup warnings:<br>2017-03-30T06:40:26.039+0800 I CONTROL  [initandlisten]<br>2017-03-30T06:40:26.039+0800 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.<br>2017-03-30T06:40:26.039+0800 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.<br>2017-03-30T06:40:26.039+0800 I CONTROL  [initandlisten]<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten]<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/enabled is ‘always’.<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] **        We suggest setting it to ‘never’<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten]<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/defrag is ‘always’.<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] **        We suggest setting it to ‘never’<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] </p>
 <pre><code>这是因为没有配置 `MongoDB` 的`安全功能`，如`授权`和`身份验证`。当然只是为了学习的话，可以忽略它，但是生产环境`必须需要配置`。
-  [1]: http://olln3wpar.bkt.clouddn.com/MongoDB_JOSN.png
-  [2]: http://olln3wpar.bkt.clouddn.com/MongoDB_1.png
-  [3]: http://olln3wpar.bkt.clouddn.com/MongoDB_2.png
-  [4]: http://olln3wpar.bkt.clouddn.com/MongoDB_3.png
-  [5]: http://olln3wpar.bkt.clouddn.com/MongoDB_4.png
+
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_JOSN.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_1.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_2.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_3.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_4.png
 </code></pre>  
 	</div>
 		<footer class="article-footer clearfix">

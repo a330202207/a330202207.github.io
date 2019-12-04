@@ -124,22 +124,22 @@ var _hmt = _hmt || [];
 2017-04-10T02:58:16.806931Z 1 [Note] A temporary password is generated for root@localhost: iacFXpWt-6gJ</code></pre><p>登录 <code>MySQL</code>:</p>
 <pre><code>[root@localhost ~]# mysql -uroot -p&#39;iacFXpWt-6gJ&#39;  </code></pre><p>修改<code>root 默认密码</code>:</p>
 <pre><code>mysql&gt; ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;MyPass1!&#39;;</code></pre><p>或者：</p>
-<pre><code>mysql&gt; set password for &#39;root&#39;@&#39;localhost&#39;=password(&#39;123abc&#39;); </code></pre><p><code>注</code>：<code>MySQL5.7</code> 默认安装了<code>密码安全检查插件（validate_password）</code>，默认密码检查策略要求密码必须包含：大小写字母、数字和特殊符号，并且长度不能少于8位。<br>否则会提示ERROR 1819 (HY000): <code>Your password does not satisfy the current policy requirements</code>错误<br><img src="http://olln3wpar.bkt.clouddn.com/LNMP_11.png" alt="此处输入图片的描述"><br>详见 MySQL 官网密码策略详细说明：<a href="https://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy</a><br>配置默认编码为 <code>utf8</code>：<br>修改 <code>/etc/my.cnf</code> 配置文件，在 <code>[mysqld]</code> 下添加编码配置，配置完成后重启：</p>
+<pre><code>mysql&gt; set password for &#39;root&#39;@&#39;localhost&#39;=password(&#39;123abc&#39;); </code></pre><p><code>注</code>：<code>MySQL5.7</code> 默认安装了<code>密码安全检查插件（validate_password）</code>，默认密码检查策略要求密码必须包含：大小写字母、数字和特殊符号，并且长度不能少于8位。<br>否则会提示ERROR 1819 (HY000): <code>Your password does not satisfy the current policy requirements</code>错误<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/LNMP_11.png" alt><br>详见 MySQL 官网密码策略详细说明：<a href="https://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/validate-password-options-variables.html#sysvar_validate_password_policy</a><br>配置默认编码为 <code>utf8</code>：<br>修改 <code>/etc/my.cnf</code> 配置文件，在 <code>[mysqld]</code> 下添加编码配置，配置完成后重启：</p>
 <pre><code>[root@localhost ~]# vim /etc/my.cnf
 [mysqld]
 character_set_server=utf8
 init_connect=&#39;SET NAMES utf8&#39;
-[root@localhost ~]# systemctl restart mysqld    # 重启 MySQL</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/LNMP_15.png" alt="此处输入图片的描述"><br>设置开机启动：</p>
+[root@localhost ~]# systemctl restart mysqld    # 重启 MySQL</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/LNMP_15.png" alt><br>设置开机启动：</p>
 <pre><code>[root@localhost ~]# systemctl enable mysqld</code></pre><p>默认配置文件路径：<br>配置文件：<code>/etc/my.cnf</code><br>日志文件：<code>/var/log//var/log/mysqld.log</code><br>服务启动脚本：<code>/usr/lib/systemd/system/mysqld.service</code><br>socket 文件：<code>/var/run/mysqld/mysqld.pid</code></p>
 <p>2、配置 Nginx<br>安装完成以后查看自己<code>防火墙</code>是否开启，如果已开启，我们需要<code>修改</code>防火墙<code>配置</code>，开启 <code>Nginx</code> 外网端口访问。</p>
-<pre><code>[root@localhost ~]# systemctl status firewalld</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/LNMP_1.png" alt="此处输入图片的描述"><br>如果显示 <code>active (running)</code>，则需要调整防火墙规则的配置。</p>
+<pre><code>[root@localhost ~]# systemctl status firewalld</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/LNMP_1.png" alt><br>如果显示 <code>active (running)</code>，则需要调整防火墙规则的配置。</p>
 <p>修改 <code>/etc/firewalld/zones/public.xml</code>文件，在zone一节中增加<br>保存后重新加载 <code>firewalld</code> 服务：</p>
 <pre><code>[root@localhost ~]# vim /etc/firewalld/zones/public.xml
 &lt;zone&gt;
     ...
     &lt;service name=&quot;nginx&quot;/&gt;
 &lt;zone&gt;
-[root@localhost ~]# systemctl reload firewalld</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/LNMP_2.png" alt="此处输入图片的描述"><br>修改 <code>Nginx</code> 配置：</p>
+[root@localhost ~]# systemctl reload firewalld</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/LNMP_2.png" alt><br>修改 <code>Nginx</code> 配置：</p>
 <pre><code>[root@localhost ~]# vim /etc/nginx/nginx.conf</code></pre><p>在 <code>server {}</code> 里添加：</p>
 <pre><code>location / {
     #定义首页索引文件的名称
@@ -152,14 +152,14 @@ location ~ .php$ {
     fastcgi_index index.php;
     fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
     include fastcgi_params;
-}</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/LNMP_12.png" alt="此处输入图片的描述"><br>配置完成重启 <code>Nginx</code>：</p>
+}</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/LNMP_12.png" alt><br>配置完成重启 <code>Nginx</code>：</p>
 <pre><code>[root@localhost ~]# systemctl start nginx    # 启动 Nginx</code></pre><p><code>注</code>：本文只是简单配置 <code>Nginx</code>，具体更多配置请自行百度。<br>设置开机启动:</p>
 <pre><code>[root@localhost ~]# systemctl enable nginx</code></pre><p>3、设置开机启动 <code>php-fpm</code>：</p>
 <pre><code>[root@localhost ~]# systemctl enable php-fpm
 [root@localhost ~]# systemctl start php-fpm    # 启动 php-fpm</code></pre><p>四、测试：</p>
 <ul>
 <li>在 <code>/usr/share/nginx/html</code> 文件下创建php文件，输出 <code>phpinfo</code> 信息</li>
-<li>浏览器访问 <code>http://&lt;内网IP地址&gt;/phpinfo.php</code>，如果看到 PHP 信息，说明<code>安装成功</code><br><img src="http://olln3wpar.bkt.clouddn.com/LNMP_13.png" alt="此处输入图片的描述"></li>
+<li>浏览器访问 <code>http://&lt;内网IP地址&gt;/phpinfo.php</code>，如果看到 PHP 信息，说明<code>安装成功</code><br><img src="https://ned.oss-cn-beijing.aliyuncs.com/LNMP_13.png" alt></li>
 </ul>
   
 	</div>

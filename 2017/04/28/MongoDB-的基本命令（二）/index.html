@@ -9,10 +9,10 @@
     
     <meta name="author" content="KevinJie">
     
-    <meta name="description" content="MongoDB 的基本命令1.db.help()查看命令提示[][1]
-2.db查看当前所在数据库的名字[][2]
-3.useuse + 数据库名，表示切换或是创建数据库。和 MySQL 中 use 的唯一不同点，就是当数据库不存在的时候，MongoDB 中的 use 可以创建数据库[][3]
-4.">
+    <meta name="description" content="MongoDB 的基本命令1.db.help()查看命令提示
+2.db查看当前所在数据库的名字
+3.useuse + 数据库名，表示切换或是创建数据库。和 MySQL 中 use 的唯一不同点，就是当数据库不存在的时候，MongoDB 中的 use 可以创建数据库
+4.show dbs显示数据库，需">
     
     
     
@@ -106,17 +106,17 @@ var _hmt = _hmt || [];
 		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-的基本命令"><span class="toc-number">1.</span> <span class="toc-text">MongoDB 的基本命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-的数据结构类型"><span class="toc-number">2.</span> <span class="toc-text">MongoDB 的数据结构类型</span></a></li></ol>
 		</div>
 		
-		<h2 id="MongoDB-的基本命令"><a href="#MongoDB-的基本命令" class="headerlink" title="MongoDB 的基本命令"></a>MongoDB 的基本命令</h2><p>1.db.help()<br>查看命令提示<br>[][1]</p>
-<p>2.db<br>查看当前所在数据库的名字<br>[][2]</p>
-<p>3.use<br><code>use</code> + <code>数据库名</code>，表示<code>切换</code>或是<code>创建</code>数据库。和 <code>MySQL</code> 中 <code>use</code> 的唯一不同点，就是当数据库<code>不存在</code>的时候，<code>MongoDB</code> 中的 <code>use</code> 可以<code>创建</code>数据库<br>[][3]</p>
-<p>4.show dbs<br>显示数据库，需要注意的是 <code>show dbs</code>，只会显示有数据的库，没有数据的库，是不会显示的。下图中，<code>test</code> 数据库中，开始没有数据，所以不会显示，当我插入一条数据库后，<code>show dbs</code> 就会显示它<br>[][4]</p>
-<p>5.db.dropDatabase()<br><code>删除</code>当前数据<br>[][5]</p>
-<p>6.db.stats()<br>显示当前 <code>db</code> 状态<br>[][6]</p>
-<p>7.db.version()<br>显示当前 <code>db</code> 版本<br>[][7]</p>
-<p>8.db.getMongo()<br>查看当前 <code>db</code> 的链接机器地址<br>[][8]</p>
-<p>9.MongoDB 对支持 JavaScript<br>因为 <code>MongoDB</code> 支持 <code>JavaScript</code>，所以可以直接在命令提示中输入 <code>js</code> 代码<br>[][9]</p>
+		<h2 id="MongoDB-的基本命令"><a href="#MongoDB-的基本命令" class="headerlink" title="MongoDB 的基本命令"></a>MongoDB 的基本命令</h2><p>1.db.help()<br>查看命令提示<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/1.png" alt></p>
+<p>2.db<br>查看当前所在数据库的名字<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/2.png" alt></p>
+<p>3.use<br><code>use</code> + <code>数据库名</code>，表示<code>切换</code>或是<code>创建</code>数据库。和 <code>MySQL</code> 中 <code>use</code> 的唯一不同点，就是当数据库<code>不存在</code>的时候，<code>MongoDB</code> 中的 <code>use</code> 可以<code>创建</code>数据库<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/3.png" alt></p>
+<p>4.show dbs<br>显示数据库，需要注意的是 <code>show dbs</code>，只会显示有数据的库，没有数据的库，是不会显示的。下图中，<code>test</code> 数据库中，开始没有数据，所以不会显示，当我插入一条数据库后，<code>show dbs</code> 就会显示它<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/4.png" alt></p>
+<p>5.db.dropDatabase()<br><code>删除</code>当前数据<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/5.png" alt></p>
+<p>6.db.stats()<br>显示当前 <code>db</code> 状态<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/6.png" alt></p>
+<p>7.db.version()<br>显示当前 <code>db</code> 版本<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/7.png" alt></p>
+<p>8.db.getMongo()<br>查看当前 <code>db</code> 的链接机器地址<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/8.png" alt></p>
+<p>9.MongoDB 对支持 JavaScript<br>因为 <code>MongoDB</code> 支持 <code>JavaScript</code>，所以可以直接在命令提示中输入 <code>js</code> 代码<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/9.png" alt></p>
 <p>10.清空屏幕<br><code>cls</code> 命令</p>
-<h2 id="MongoDB-的数据结构类型"><a href="#MongoDB-的数据结构类型" class="headerlink" title="MongoDB 的数据结构类型"></a>MongoDB 的数据结构类型</h2><p>一个<code>数据库</code>(Database)中可以包含多个<code>集合</code>(colection)，每个<code>集合</code>中，可以包含多个<code>文档</code>。可以类比，SQL 数据库，一个<code>数据库</code>中包含多个<code>表</code>，每个<code>表</code>中包含多个<code>记录</code><br>| SQL术语/概念       | MongoDB术语/概念 |<br>| :——–          | :—–           |<br>|Database(数据库)    | Database(数据库) |<br>|Table(数据库表)     | Collection(集合) |<br>|Row(数据记录行)     | Document(文档)   |<br>|Column(数据字段)    | Field(域)        |<br>|Index(索引)         | Index(索引)      |<br>|Table  joins(表连接)| 不支持           |<br>|primary key(主键)   |primary key(MongoDB自动将_id字段设置为主键)|<br>[][10]<br>[][11]</p>
+<h2 id="MongoDB-的数据结构类型"><a href="#MongoDB-的数据结构类型" class="headerlink" title="MongoDB 的数据结构类型"></a>MongoDB 的数据结构类型</h2><p>一个<code>数据库</code>(Database)中可以包含多个<code>集合</code>(colection)，每个<code>集合</code>中，可以包含多个<code>文档</code>。可以类比，SQL 数据库，一个<code>数据库</code>中包含多个<code>表</code>，每个<code>表</code>中包含多个<code>记录</code><br>| SQL术语/概念       | MongoDB术语/概念 |<br>| :——–          | :—–           |<br>|Database(数据库)    | Database(数据库) |<br>|Table(数据库表)     | Collection(集合) |<br>|Row(数据记录行)     | Document(文档)   |<br>|Column(数据字段)    | Field(域)        |<br>|Index(索引)         | Index(索引)      |<br>|Table  joins(表连接)| 不支持           |<br>|primary key(主键)   |primary key(MongoDB自动将_id字段设置为主键)|<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/10.png" alt><br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%282%29/11.png" alt></p>
 <p><code>BSON</code> 类型：</p>
 <ul>
 <li>null<br><code>null</code> 用于表示<code>空值</code>或者<code>不存在</code>的字段。<code>{“tmpkey”:null}</code></li>
@@ -137,7 +137,7 @@ var _hmt = _hmt || [];
 <li>数组<br>值的<code>集合</code>或者<code>列表</code>可以表示成<code>数组</code>:<code>{“tmpkey”:[“a”, “b”, “c”]}</code></li>
 <li>内嵌文档<br>文档可以包含别的文档，也可以作为值<code>嵌入</code>到<code>父文档</code>中，数据可以组织得更自然些，不用非得存成扁平结构的:<code>{“tmpkey”:{“color”:“yello”}}</code></li>
 </ul>
-<p><strong>相关文档：<a href="https://docs.mongodb.com/manual/reference/bson-types/" target="_blank" rel="noopener">https://docs.mongodb.com/manual/reference/bson-types/</a></strong><br>  [1]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png</a><br>  [2]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png</a><br>  [3]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png</a><br>  [4]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png</a><br>  [5]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/1.png</a><br>  [6]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/6.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/6.png</a><br>  [7]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/7.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/7.png</a><br>  [8]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/8.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/8.png</a><br>  [9]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/9.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/9.png</a><br>  [10]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/10.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/10.png</a><br>  [11]: <a href="http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/11.png" target="_blank" rel="noopener">http://olln3wpar.bkt.clouddn.com/image/MongoDB%282%29/11.png</a></p>
+<p><strong>相关文档：<a href="https://docs.mongodb.com/manual/reference/bson-types/" target="_blank" rel="noopener">https://docs.mongodb.com/manual/reference/bson-types/</a></strong></p>
   
 	</div>
 		<footer class="article-footer clearfix">

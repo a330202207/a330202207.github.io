@@ -105,7 +105,7 @@ var _hmt = _hmt || [];
 		</div>
 		
 		<h2 id="一、主从复制原理"><a href="#一、主从复制原理" class="headerlink" title="一、主从复制原理"></a>一、主从复制原理</h2><blockquote>
-<p><code>MySQL</code> 主从复制是一个<code>异步</code>的<code>复制</code>过程，<code>主库</code>发送<code>更新事件</code>到<code>从库</code>，<code>从库</code>读取<code>更新记录</code>，并<code>执行</code>更新<code>记录</code>，使得<code>从库</code>的内容与主库<code>保持一致</code>。每一个<code>主从复制</code>的连接，都有<code>三个线程</code>。拥有<code>多个从库</code>的<code>主库</code>为<code>每一个连接</code>到<code>主库</code>的<code>从库</code>创建一个 <code>Binarylog</code> 输出线程，<code>每一个从库</code>都有它自己的 <code>I/O</code> 线程和 <code>SQL</code> 线程。<br><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg00.png" alt><br><strong>步骤</strong>：<br>1.<code>主库</code>会将<code>所有</code>的<code>更新</code>记录保存到 <code>Binarylog</code> 文件。<br>2.每当有<code>从库</code>连接到<code>主库</code>的时候，<code>主库</code>都会创建一个 <code>log dump</code> 线程发送 <code>Binarylog</code> 文件到<code>从库</code>。<br>3.在<code>从库</code>里，当复制开始的时候，<code>从库</code>就会创建<code>两个线程</code>进行处理，一个 <code>I/O</code> 线程，一个 <code>SQL</code> 线程。<br>4. <code>I/O</code> 线程去请求<code>主库</code>的  <code>Binarylog</code>文件，并将得到的 <code>Binarylog</code> 文件写到 <code>Relaylog</code> 文件中。<br>5. <code>SQL</code> 线程会读取 <code>Relaylog</code> 文件中的日志，并解析成具体操作，来实现主从的操作一致，而最终数据一致。</p>
+<p><code>MySQL</code> 主从复制是一个<code>异步</code>的<code>复制</code>过程，<code>主库</code>发送<code>更新事件</code>到<code>从库</code>，<code>从库</code>读取<code>更新记录</code>，并<code>执行</code>更新<code>记录</code>，使得<code>从库</code>的内容与主库<code>保持一致</code>。每一个<code>主从复制</code>的连接，都有<code>三个线程</code>。拥有<code>多个从库</code>的<code>主库</code>为<code>每一个连接</code>到<code>主库</code>的<code>从库</code>创建一个 <code>Binarylog</code> 输出线程，<code>每一个从库</code>都有它自己的 <code>I/O</code> 线程和 <code>SQL</code> 线程。<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg00.png" alt><br><strong>步骤</strong>：<br>1.<code>主库</code>会将<code>所有</code>的<code>更新</code>记录保存到 <code>Binarylog</code> 文件。<br>2.每当有<code>从库</code>连接到<code>主库</code>的时候，<code>主库</code>都会创建一个 <code>log dump</code> 线程发送 <code>Binarylog</code> 文件到<code>从库</code>。<br>3.在<code>从库</code>里，当复制开始的时候，<code>从库</code>就会创建<code>两个线程</code>进行处理，一个 <code>I/O</code> 线程，一个 <code>SQL</code> 线程。<br>4. <code>I/O</code> 线程去请求<code>主库</code>的  <code>Binarylog</code>文件，并将得到的 <code>Binarylog</code> 文件写到 <code>Relaylog</code> 文件中。<br>5. <code>SQL</code> 线程会读取 <code>Relaylog</code> 文件中的日志，并解析成具体操作，来实现主从的操作一致，而最终数据一致。</p>
 </blockquote>
 <h2 id="二、工具"><a href="#二、工具" class="headerlink" title="二、工具"></a>二、工具</h2><ul>
 <li>VMware版本：12.0.0 </li>
@@ -114,7 +114,7 @@ var _hmt = _hmt || [];
 <li>Master 服务器：192.168.78.128</li>
 <li>Slave 服务器：192.168.78.130</li>
 </ul>
-<h2 id="三、准备工作"><a href="#三、准备工作" class="headerlink" title="三、准备工作"></a>三、准备工作</h2><p>1.安装 MySQL5.7 <a href="http://upupjie.com/2017/04/10/CentOS-7-%E5%AE%89%E8%A3%85-LNMP-%E7%8E%AF%E5%A2%83%EF%BC%88PHP7-MySQL5-7-Nginx1-10%EF%BC%89/" target="_blank" rel="noopener">详见此处</a><br>2.如果<code>从服务器</code>是<code>克隆</code>的<code>主服务器</code>，则修改 <code>auto.cnf</code> 文件中 <code>server-uuid</code> 值，不然后面<code>主从复制</code>会报 <code>1593</code> 错误。修改完记得重启MySQL<br><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/1.png" alt><br>3.关闭<code>主、从</code>服务器<code>防火墙</code>：</p>
+<h2 id="三、准备工作"><a href="#三、准备工作" class="headerlink" title="三、准备工作"></a>三、准备工作</h2><p>1.安装 MySQL5.7 <a href="http://upupjie.com/2017/04/10/CentOS-7-%E5%AE%89%E8%A3%85-LNMP-%E7%8E%AF%E5%A2%83%EF%BC%88PHP7-MySQL5-7-Nginx1-10%EF%BC%89/" target="_blank" rel="noopener">详见此处</a><br>2.如果<code>从服务器</code>是<code>克隆</code>的<code>主服务器</code>，则修改 <code>auto.cnf</code> 文件中 <code>server-uuid</code> 值，不然后面<code>主从复制</code>会报 <code>1593</code> 错误。修改完记得重启MySQL<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/1.png" alt><br>3.关闭<code>主、从</code>服务器<code>防火墙</code>：</p>
 <pre><code>$ firewall-cmd --state      ##查看防火墙状态
 running                     ##防火墙开启
 
@@ -127,7 +127,7 @@ log_bin=mysql-bin
 server_id=128</code></pre><p>192.168.78.130(slave)：</p>
 <pre><code>bind-address=192.168.78.130         #当前服务器地址
 log_bin=mysql-bin  
-server_id=130</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/2.png" alt></p>
+server_id=130</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/2.png" alt></p>
 <p>重启主从 <code>MySQL</code>:</p>
 <pre><code>$ systemctl restart mysqld</code></pre><p><code>注</code>: <code>server_id</code> 必须唯一</p>
 <p>5.<code>master</code> 上创建一个测试数据库</p>
@@ -146,7 +146,7 @@ mysql&gt; grant replication slave on *.* to &#39;test&#39;@&#39;192.168.78.130&#
 mysql&gt; select user,host from mysql.user;
 
 ##查看 master 状态
-mysql&gt; show master status;</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/3.png" alt><br><code>注</code>：<br>这里的 <code>mysql-bin.000001</code>和 <code>Position</code> 配置 <code>slave</code> 的时候需要用到</p>
+mysql&gt; show master status;</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/3.png" alt><br><code>注</code>：<br>这里的 <code>mysql-bin.000001</code>和 <code>Position</code> 配置 <code>slave</code> 的时候需要用到</p>
 <p>2.将 <code>master</code> 中现有的数据信息<code>导出</code>：</p>
 <pre><code>$ mysqldump -u root -p --all-databases --master-data &gt; all.sql</code></pre><p>3.将 <code>all.sql</code> 发送到 <code>slave</code> 服务器 <code>tmp</code> 目录下:</p>
 <pre><code>$ scp all.sql root@192.168.78.130:/tmp</code></pre><p>4.<code>slave</code> 导入 <code>master</code> 数据，使 <code>master-slave</code> 数据<code>保持一致</code>：</p>
@@ -161,15 +161,15 @@ mysql&gt; show master status;</code></pre><p><img src="http://olln3wpar.bkt.clou
 
 mysql&gt; start slave;
 
-mysql&gt; show slave status \G</code></pre><p><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/5.png" alt></p>
+mysql&gt; show slave status \G</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/5.png" alt></p>
 <p><code>注</code>：</p>
 <ul>
 <li><code>master_log_file</code> 和 <code>master_log_pos</code>值为<code>主库</code>上面执行<code>show master status</code>得到</li>
 <li>如果 <code>Slave_IO_Running</code> 和 <code>Slave_SQL_Running</code> 都为 <code>Yes</code>，说明配置<code>成功</code>。 如果</li>
 <li>其中一项不为 <code>Yes</code>，查看 <code>Last_IO_Errno</code> 错误码和<code>错误信息</code>，或者查看 <code>MySQL</code> 日志信息并查找对应问题。</li>
 </ul>
-<h2 id="五、主从配置检验"><a href="#五、主从配置检验" class="headerlink" title="五、主从配置检验"></a>五、主从配置检验</h2><p><code>master</code> 插入一条数据，<code>slave</code>查看是否成功<br>192.168.78.128(master)：<br><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/6.png" alt></p>
-<p>192.168.78.130(slave)：<br><img src="http://olln3wpar.bkt.clouddn.com/Mysql/jpg/7.png" alt></p>
+<h2 id="五、主从配置检验"><a href="#五、主从配置检验" class="headerlink" title="五、主从配置检验"></a>五、主从配置检验</h2><p><code>master</code> 插入一条数据，<code>slave</code>查看是否成功<br>192.168.78.128(master)：<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/6.png" alt></p>
+<p>192.168.78.130(slave)：<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Mysql/jpg/7.png" alt></p>
 <h2 id="六、思考"><a href="#六、思考" class="headerlink" title="六、思考"></a>六、思考</h2><p>主从复制同步<code>延迟</code>如何解决？</p>
   
 	</div>

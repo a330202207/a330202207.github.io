@@ -134,7 +134,7 @@ db.student.createIndex({time:1},{expireAfterSeconds:15})
 # new Date()自动获取当前时间，ISODate
 db.student.insert({time:new Date()}) 
 db.student find() 
-</code></pre><p>过30秒后再查找，刚才的数据就已经不存在了<br><img src="http://olln3wpar.bkt.clouddn.com/image/MongoDB%284%29/1.png" alt><br>过期索引的限制：</p>
+</code></pre><p>过30秒后再查找，刚才的数据就已经不存在了<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/MongoDB%284%29/1.png" alt><br>过期索引的限制：</p>
 <ol>
 <li>存储在过期索引字段的值<code>必须</code>是指定的<code>时间类型</code>，必须是 <code>ISODate</code> 或者 <code>ISODate</code> 数组，<code>不能</code>使用<code>时间戳</code>，否则不能<code>自动删除</code></li>
 <li>如果指定了 <code>ISODate</code> 数组，则按照<code>最小</code>的<code>时间</code>进行删除</li>
