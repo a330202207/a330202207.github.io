@@ -1,0 +1,388 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  
+    <title>关于SELECT COUNT一些问题 | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="COUNT函数关于COUNT函数:
+
+COUNT(expr) ，返回SELECT语句检索的行中expr的值不为NULL的数量。结果是一个BIGINT值
+如果查询结果没有命中任何记录，则返回0
+
+注：COUNT(*)的统计结果会包含值为NULL的行数假如有张表如下
+
+使用语句count(*), cou">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/myLogo.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/myLogo.png">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+</html>
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2019/11/20/关于SELECT-COUNT一些问题/" title="关于SELECT COUNT一些问题" itemprop="url">关于SELECT COUNT一些问题</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2019-11-20T09:58:09.000Z" itemprop="datePublished">2019年11月20日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#COUNT函数"><span class="toc-number">1.</span> <span class="toc-text">COUNT函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#COUNT-字段-、COUNT-常量-和-COUNT-之间的区别"><span class="toc-number">2.</span> <span class="toc-text">COUNT(字段)、COUNT(常量) 和 COUNT(*) 之间的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#COUNT-和-COUNT-1-区别"><span class="toc-number">3.</span> <span class="toc-text">COUNT(*) 和 COUNT(1) 区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB-与-MyISAM-引擎中-COUNT"><span class="toc-number">4.</span> <span class="toc-text">InnoDB 与 MyISAM 引擎中 COUNT(*)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于聚簇索引与辅助索引-二级索引-的-COUNT-字段"><span class="toc-number">5.</span> <span class="toc-text">关于聚簇索引与辅助索引(二级索引)的 COUNT(字段)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li></ol>
+		</div>
+		
+		<h2 id="COUNT函数"><a href="#COUNT函数" class="headerlink" title="COUNT函数"></a>COUNT函数</h2><p>关于COUNT函数:</p>
+<ul>
+<li>COUNT(expr) ，返回SELECT语句检索的行中expr的值不为NULL的数量。结果是一个BIGINT值</li>
+<li>如果查询结果没有命中任何记录，则返回0</li>
+</ul>
+<p><strong>注</strong>：<br>COUNT(*)的统计结果会包含值为NULL的行数<br>假如有张表如下</p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Xnip2019-11-20_18-17-03.jpg" alt></p>
+<p>使用语句<code>count(*)</code>, <code>count(name)</code>, <code>count(age)</code>, <code>count(class)</code>, <code>count(1)</code>查询结果如下<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Xnip2019-11-21_14-25-35.jpg" alt></p>
+<h2 id="COUNT-字段-、COUNT-常量-和-COUNT-之间的区别"><a href="#COUNT-字段-、COUNT-常量-和-COUNT-之间的区别" class="headerlink" title="COUNT(字段)、COUNT(常量) 和 COUNT(*) 之间的区别"></a>COUNT(字段)、COUNT(常量) 和 COUNT(*) 之间的区别</h2><p><code>COUNT(常量)</code> 和 <code>COUNT(*)</code>表示的是直接查询<strong>符合条件</strong>的数据库表的行数。而COUNT(字段)表示的是查询符合条件的列的值<strong>不为NULL</strong>的行数</p>
+<p>除了查询得到结果集有区别之外，<code>COUNT(*)</code>相比 <code>COUNT(常量)</code> 和 <code>COUNT(字段)</code>来讲，<strong>COUNT(*)是SQL92定义的标准统计行数的语法，因为他是标准语法，所以MySQL数据库对他进行过很多优化</strong></p>
+<blockquote>
+<p>SQL92，是数据库的一个ANSI/ISO标准。它定义了一种语言（SQL）以及数据库的行为（事务、隔离级别等）。</p>
+</blockquote>
+<h2 id="COUNT-和-COUNT-1-区别"><a href="#COUNT-和-COUNT-1-区别" class="headerlink" title="COUNT(*) 和 COUNT(1) 区别"></a>COUNT(*) 和 COUNT(1) 区别</h2><p><a href="https://dev.mysql.com/doc/refman/8.0/en/group-by-functions.html" target="_blank" rel="noopener">MySQL官方文档</a>：</p>
+<blockquote>
+<p>InnoDB handles SELECT COUNT(*) and SELECT COUNT(1) operations in the same way. There is no performance difference</p>
+</blockquote>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Xnip2019-11-21_14-30-36.jpg" alt><br>所以，对于<strong>COUNT(1)和COUNT(*)，性能是一样的</strong>，完全不存在谁比谁快，建议使用<code>COUNT(*)</code>！因为这个是SQL92定义的标准统计行数的语法</p>
+<h2 id="InnoDB-与-MyISAM-引擎中-COUNT"><a href="#InnoDB-与-MyISAM-引擎中-COUNT" class="headerlink" title="InnoDB 与 MyISAM 引擎中 COUNT(*)"></a>InnoDB 与 MyISAM 引擎中 COUNT(*)</h2><ul>
+<li>在 <code>MyISAM</code> 存储引擎中， <code>COUNT(*)</code> 函数是直接读取数据表保存的行记录数并返回</li>
+<li>在 <code>InnoDB</code> 存储引擎中， <code>COUNT(*)</code> 函数是先从内存中读取表中的数据到内存缓冲区，然后扫描全表获得行记录数的。</li>
+</ul>
+<p>在使用 <code>COUNT</code> 函数中加上 <code>WHERE</code> 条件时，在两个存储引擎中的效果是一样的，都会<strong>扫描全表</strong>计算某字段有值项的次数</p>
+<h2 id="关于聚簇索引与辅助索引-二级索引-的-COUNT-字段"><a href="#关于聚簇索引与辅助索引-二级索引-的-COUNT-字段" class="headerlink" title="关于聚簇索引与辅助索引(二级索引)的 COUNT(字段)"></a>关于聚簇索引与辅助索引(二级索引)的 COUNT(字段)</h2><p>Innodb索引分类：</p>
+<ul>
+<li>聚簇索引(clustered index)<ul>
+<li>有主键时，根据主键创建聚簇索引</li>
+<li>没有主键时，会用一个唯一且不为空的索引列做为主键，成为此表的聚簇索引</li>
+<li>如果以上两个都不满足那innodb自己创建一个虚拟的聚集索引</li>
+</ul>
+</li>
+<li>辅助索引(secondary index)<ul>
+<li>非聚簇索引都是辅助索引，像复合索引、前缀索引、唯一索引</li>
+</ul>
+</li>
+</ul>
+<p>在InnoDB中<strong>默认会使用可用辅助索引来统计行数，如果不存在辅助索引，则通过扫描聚簇索引来统计行数</strong></p>
+<p><strong>原理</strong>：<br>查询优化器是选择能够让<strong>IO次数最少的索引</strong>，也就是基于<strong>占用空间最小</strong>的字段所建的索引（每次IO读取的数据量是固定的，索引占用的空间越小所需的IO次数也就越少）</p>
+<blockquote>
+<p>目前基于磁盘的数据库或者搜索引擎（比如Lucene）的性能瓶颈主要都是在IO阶段，相比于CPU和RAM，IO操作实在太慢了，所以这类系统的优化方向也都都是类似的——尽一切可能减少IO的次数（所以很多用ES的程序在性能优化到极限的时候选择直接上SSD）</p>
+</blockquote>
+<p>Innodb中<strong>聚簇索引</strong>的叶子节点中保存的是整行记录，而<strong>辅助索引</strong>的叶子节点中保存的是该行记录的主键的值，相比之下，辅助索引要比聚簇索引小很多，所以MySQL会优先选择<strong>最小的辅助索引</strong>来扫表，当存在多个辅助索引情况下会<strong>选择占用空间最小的</strong>。针对于主键字段比较大，可以先建一个小字段并创建一个辅助索引专门用来统计行数</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>COUNT(1)和COUNT(*)，使用COUNT(*)</li>
+<li>COUNT(字段)辅助索引    <strong>&gt;</strong>  COUNT(字段)聚簇索引</li>
+<li>COUNT(字段)辅助索引(空间小)   <strong>&gt;</strong> COUNT(字段)辅助索引</li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2019/11/20/关于SELECT-COUNT一些问题/" data-title="关于SELECT COUNT一些问题 | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2019/12/02/如何设计一个安全的HTTP接口/" title="如何设计一个安全的HTTP接口">
+  <strong>新一篇:</strong><br/>
+  <span>
+  如何设计一个安全的HTTP接口</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2019/11/17/七牛云图床挂了，解决办法/"  title="七牛云图床挂了解决办法">
+ <strong>旧一篇:</strong><br/> 
+ <span>七牛云图床挂了解决办法
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

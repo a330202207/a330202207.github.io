@@ -1,0 +1,547 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  
+    <title>某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="某杰的博客">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/myLogo.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/myLogo.png">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+</html>
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      
+
+<div id="main">
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2020/01/16/MySQL索引（一）/" title="MySQL索引（二）" itemprop="url">
+      
+        MySQL索引（二）
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >一、为什么使用索引1.什么是索引？官方对索引的定义为：索引（Index）是帮助 MySQL 高效获取数据的数据结构，数据库索引好比是一本书前面的目录，能加快数据库的查询速度
+2.为什么使用索引？在 MySQL 中，通常有以下两种方式访问数据库表的行数据：
+1) 顺序访问
+顺序访问</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2020-01-16T05:06:09.000Z" itemprop="datePublished">2020年01月16日</time>
+      
+          <a href="/2020/01/16/MySQL索引（一）/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2019/12/04/MySQL执行流程（一）/" title="MySQL执行流程（一）" itemprop="url">
+      
+        MySQL执行流程（一）
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >想要学好一门技术，最基本的要求是摸清其原理和作用。学习MySQL也是如此，只有清晰的理解SQL语句执行的整个过程，才能更好的进行SQL的编写和优化。
+
+MySQL执行一个查询的过程，到底做了些什么？鉴于流程图如下：
+大致流程描述:
+
+MySQL客户端通过协议将SQL语句发送给My</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2019-12-04T08:20:23.000Z" itemprop="datePublished">2019年12月04日</time>
+      
+          <a href="/2019/12/04/MySQL执行流程（一）/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2019/12/02/如何设计一个安全的HTTP接口/" title="如何设计一个安全的HTTP接口" itemprop="url">
+      
+        如何设计一个安全的HTTP接口
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >安全措施大体来看主要在两个方面1.如何保证数据在传输过程中的安全性2.数据已经到达服务器端，服务器端如何识别数据，如何不被攻击
+
+安全措施1.数据加密我们知道数据在传输过程中是很容易被抓包的，如果直接传输比如通过 HTTP 协议，那么用户传输的数据可以被任何人获取，所以必须对数据</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2019-12-02T04:01:50.000Z" itemprop="datePublished">2019年12月02日</time>
+      
+          <a href="/2019/12/02/如何设计一个安全的HTTP接口/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2019/11/20/关于SELECT-COUNT一些问题/" title="关于SELECT COUNT一些问题" itemprop="url">
+      
+        关于SELECT COUNT一些问题
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >COUNT函数关于COUNT函数:
+
+COUNT(expr) ，返回SELECT语句检索的行中expr的值不为NULL的数量。结果是一个BIGINT值
+如果查询结果没有命中任何记录，则返回0
+
+注：COUNT(*)的统计结果会包含值为NULL的行数假如有张表如下
+
+使用语句cou</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2019-11-20T09:58:09.000Z" itemprop="datePublished">2019年11月20日</time>
+      
+          <a href="/2019/11/20/关于SELECT-COUNT一些问题/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2019/11/17/七牛云图床挂了，解决办法/" title="七牛云图床挂了解决办法" itemprop="url">
+      
+        七牛云图床挂了解决办法
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >起因之前的图片放七牛云上面，由于测试域名被收回导致图片裂了
+解决方案
+已有存储空间（测试域名已被回收）：bucketA，华东 
+新建另一个地区的存储空间：bucketB，华南
+使用“跨区域同步管理”：将 bucketA 的内容迁移到 bucketB
+下载qshell
+根据 qdo</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2019-11-17T08:41:19.000Z" itemprop="datePublished">2019年11月17日</time>
+      
+          <a href="/2019/11/17/七牛云图床挂了，解决办法/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2018/01/02/PHP中的自动加载/" title="PHP中的自动加载" itemprop="url">
+      
+        PHP中的自动加载
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >所谓的自动加载意思就是我们在 new 一个 class 的时候必须先 include 或者 require 的类文件，如果没有 include 或者 require，则会报错。那这样我们就必须在文件头部写上许多 include 或 require 文件，非常麻烦，为了使得没有 i</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2018-01-02T08:59:31.000Z" itemprop="datePublished">2018年01月02日</time>
+      
+          <a href="/2018/01/02/PHP中的自动加载/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2017/07/22/Git的简单命令/" title="Git的简单命令" itemprop="url">
+      
+        Git的简单命令
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >Git 是一款免费、开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。Git是一个开源的分布式版本控制系统，可以有效、高速的处理从很小到非常大的项目版本管理。
+工作原理：
+Workspace（工作区）：执行 git add * 命令就把改动提交到了暂存区，执行 gi</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2017-07-22T15:12:51.000Z" itemprop="datePublished">2017年07月22日</time>
+      
+          <a href="/2017/07/22/Git的简单命令/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2017/07/20/整理一个自己知识体系/" title="整理一个自己知识体系" itemprop="url">
+      
+        整理一个自己知识体系
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >整理自己一个知识体系，慢慢完善</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2017-07-20T13:21:34.000Z" itemprop="datePublished">2017年07月20日</time>
+      
+          <a href="/2017/07/20/整理一个自己知识体系/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2017/07/16/MySQL5-7-主从复制配置/" title="MySQL5.7 主从复制配置" itemprop="url">
+      
+        MySQL5.7 主从复制配置
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >一、主从复制原理
+MySQL 主从复制是一个异步的复制过程，主库发送更新事件到从库，从库读取更新记录，并执行更新记录，使得从库的内容与主库保持一致。每一个主从复制的连接，都有三个线程。拥有多个从库的主库为每一个连接到主库的从库创建一个 Binarylog 输出线程，每一个从库都有</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2017-07-16T05:06:09.000Z" itemprop="datePublished">2017年07月16日</time>
+      
+          <a href="/2017/07/16/MySQL5-7-主从复制配置/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+  <section class="post" itemscope itemprop="blogPost">
+  <article>
+    <h1 itemprop="name">
+      
+        <a href="/2017/04/30/MongoDB的索引(四)/" title="MongoDB的索引（四）" itemprop="url">
+      
+        MongoDB的索引（四）
+      </a>
+    </h1>
+    
+     
+           <p itemprop="description" >MongoDB 索引分类1、_id 索引_id 索引是绝大多数集合默认建立的索引，对于每个插入的数据，MongoDB 都会自动生成一条唯一的 _id字段
+2、单键索引
+
+单键索引是最普通的索引
+与_id索引不同，单键索引不会自动创建 如：一条记录，形式为：{ &amp;quot;stu_</p>
+        
+    
+    <p class="article-more-link">
+      <time datetime="2017-04-30T01:57:56.000Z" itemprop="datePublished">2017年04月30日</time>
+      
+          <a href="/2017/04/30/MongoDB的索引(四)/">more&raquo;</a>
+      
+    </p>
+
+  </article>
+</section>
+
+
+  <nav id="page-nav" class="clearfix">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">下一页 &raquo;</a>
+  </nav>
+
+</div>
+      <div id="asidepart">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	
+	<section class="author-info">
+		
+			<p> 某杰</p>
+		
+		
+			<p>	亦当砥砺奋进</p>
+		
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1879354874" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/a330202207" target="_blank" title="github"></a>
+		
+		
+	</div>
+</div>
+<aside class="clearfix">
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Git/" title="Git">Git<sup>2</sup></a></li>
+		
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>6</sup></a></li>
+		
+			<li><a href="/categories/MySQL/" title="MySQL">MySQL<sup>5</sup></a></li>
+		
+			<li><a href="/categories/NoSQL/" title="NoSQL">NoSQL<sup>9</sup></a></li>
+		
+			<li><a href="/categories/PHP/" title="PHP">PHP<sup>8</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/MongoDB/" title="MongoDB">MongoDB<sup>5</sup></a></li>
+		
+			<li><a href="/tags/Redis/" title="Redis">Redis<sup>6</sup></a></li>
+		
+			<li><a href="/tags/Sublime/" title="Sublime">Sublime<sup>1</sup></a></li>
+		
+			<li><a href="/tags/yum/" title="yum">yum<sup>7</sup></a></li>
+		
+			<li><a href="/tags/七牛云/" title="七牛云">七牛云<sup>1</sup></a></li>
+		
+			<li><a href="/tags/接口/" title="接口">接口<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+
+
+
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+ </html>

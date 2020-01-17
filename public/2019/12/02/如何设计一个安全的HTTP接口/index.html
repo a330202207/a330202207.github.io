@@ -1,0 +1,376 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  
+    <title>如何设计一个安全的HTTP接口 | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="安全措施大体来看主要在两个方面1.如何保证数据在传输过程中的安全性2.数据已经到达服务器端，服务器端如何识别数据，如何不被攻击
+
+安全措施1.数据加密我们知道数据在传输过程中是很容易被抓包的，如果直接传输比如通过 HTTP 协议，那么用户传输的数据可以被任何人获取，所以必须对数据加密，常见的做法对关">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/myLogo.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/myLogo.png">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+</html>
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2019/12/02/如何设计一个安全的HTTP接口/" title="如何设计一个安全的HTTP接口" itemprop="url">如何设计一个安全的HTTP接口</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2019-12-02T04:01:50.000Z" itemprop="datePublished">2019年12月02日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安全措施"><span class="toc-number">1.</span> <span class="toc-text">安全措施</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-数据加密"><span class="toc-number">1.1.</span> <span class="toc-text">1.数据加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-数据加签"><span class="toc-number">1.2.</span> <span class="toc-text">2.数据加签</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-时间戳机制"><span class="toc-number">1.3.</span> <span class="toc-text">3.时间戳机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-AppId机制"><span class="toc-number">1.4.</span> <span class="toc-text">4.AppId机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-限流机制"><span class="toc-number">1.5.</span> <span class="toc-text">5.限流机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-黑名单机制"><span class="toc-number">1.6.</span> <span class="toc-text">6.黑名单机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-数据合法性校验"><span class="toc-number">1.7.</span> <span class="toc-text">7.数据合法性校验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">1.8.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+		</div>
+		
+		<blockquote>
+<p>安全措施大体来看主要在两个方面<br>1.如何保证数据在传输过程中的安全性<br>2.数据已经到达服务器端，服务器端如何识别数据，如何不被攻击</p>
+</blockquote>
+<h2 id="安全措施"><a href="#安全措施" class="headerlink" title="安全措施"></a>安全措施</h2><h3 id="1-数据加密"><a href="#1-数据加密" class="headerlink" title="1.数据加密"></a>1.数据加密</h3><p>我们知道数据在传输过程中是<strong>很容易被抓包</strong>的，如果直接传输比如通过 HTTP 协议，那么用户传输的数据可以被任何人获取，所以必须对<strong>数据加密</strong>，常见的做法对关键字段比如用户密码直接通过 MD5 产生信息摘要，现在主流的做法是使用 HTTPS 协议，在 HTTP 和 TCP 之间添加一层加密层(SSL层)，这一层负责数据的加密和解密。</p>
+<p>现在主流的加密方式有：<br><strong>对称加密</strong>：<br>对称密钥在加密和解密的过程中使用的<strong>密钥是相同</strong>的，常见的对称加密算法有 DES，AES，优点是计算速度快，缺点是在数据传送前，发送方和接收方必须商定好秘钥，然后使双方都能保存好秘钥，如果一方的秘钥被泄露，那么加密信息也就不安全了。</p>
+<p><strong>非对称加密</strong>：<br>服务端会生成一对密钥，私钥存放在服务器端，公钥可以发布给任何人使用；优点就是比起对称加密更加安全，但是加解密的速度比对称加密慢太多了，广泛使用的是 RSA 算法。</p>
+<p>两种方式各有优缺点，而 HTTPS 的实现方式正好是结合了两种加密方式，整合了双方的优点，在安全和性能方面都比较好。</p>
+<h3 id="2-数据加签"><a href="#2-数据加签" class="headerlink" title="2.数据加签"></a>2.数据加签</h3><p>数据加签就是由发送者产生一段<strong>无法伪造</strong>的一段<strong>数字串</strong>，来保证数据在传输过程中不被篡改，你可能会问数据如果已经通过 HTTPS 加密了，还有必要进行加签吗？数据在传输过程中经过加密，理论上就算被抓包，也无法对数据进行篡改，但是我们要知道加密的部分其实只是在外网，现在很多服务在内网中都需要经过很多服务跳转，所以这里的加签可以防止内网中数据被篡改。</p>
+<pre><code>//传参
+参数1={参数1}&amp;参数2={参数2}&amp;……&amp;参数n={参数n}&amp;$sign={用户签名}</code></pre><p>数据签名使用比较多的是 MD5 算法，将需要提交的数据通过某种方式组合和一个字符串，然后通过 MD5 生成一段加密字符串，这段加密字符串就是数据包的签名。</p>
+<pre><code>&lt;?php
+
+/**
+ * @notes: 签名参数算法
+ * @param array  $params 参数
+ * @param string $secret 秘钥
+ * @return string
+ * sign = 参数1{参数1}&amp;参数2{参数2}&amp;……&amp;参数n{参数n}{用户秘钥}
+ */
+function signature(array $params, string $secret)
+{
+    ksort($params);
+    $tmp = array();
+    foreach ($params as $key =&gt; $val) {
+        $tmp[] = $key . $val;
+    }
+    $tmp = implode(&#39;&#39;, $tmp);
+    return md5($tmp . $secret);
+}
+</code></pre><h3 id="3-时间戳机制"><a href="#3-时间戳机制" class="headerlink" title="3.时间戳机制"></a>3.时间戳机制</h3><p>数据是很容易被抓包的，但是经过如上的加密，加签处理，就算拿到数据也不能看到真实的数据，但是有不法者不关心真实的数据，而是直接拿到抓取的数据包进行<strong>恶意请求</strong>，这时候可以使用时间戳机制，在每次请求中加入当前的时间，服务器端会拿到当前时间和消息中的时间相减，看看是否在一个固定的时间范围内比如5分钟内，这样恶意请求的数据包是无法更改里面时间的，所以5分钟后就视为非法请求了，这样可以做到简单的防重放，但是<strong>并不能真的解决重放的问题</strong>，时间戳如果被修改为当前时间戳的话。那这种方式就失效了。</p>
+<h3 id="4-AppId机制"><a href="#4-AppId机制" class="headerlink" title="4.AppId机制"></a>4.AppId机制</h3><p>大部分网站基本都需要用户名和密码才能登录，并不是谁都能来能使用我的网站，这其实也是一种安全机制，对应的对外提供的接口其实也需要这么一种机制，并不是谁都可以调用，需要使用接口的用户需要在后台开通 AppId，提供给用户相关的密钥，在调用的接口中需要提供 AppId + 密钥，服务器端会进行相关的验证。</p>
+<h3 id="5-限流机制"><a href="#5-限流机制" class="headerlink" title="5.限流机制"></a>5.限流机制</h3><p>本来就是真实的用户，并且开通了 AppId，但是出现频繁调用接口的情况，这种情况需要给相关 AppId 限流处理。</p>
+<p>常用的限流算法包括：<br><strong>1.令牌桶限流</strong><br>令牌桶算法的原理是系统以一定速率向桶中放入令牌，填满了就丢弃令牌，请求来时会先从桶中取出令牌，如果能取到令牌，则可以继续完成请求，否则等待或者拒绝服务，令牌桶允许一定程度突发流量，只要有令牌就可以处理，支持一次拿多个令牌。</p>
+<p><strong>2.漏桶限流</strong><br>漏桶算法的原理是按照固定常量速率流出请求，流入请求速率任意，当请求数超过桶的容量时，新的请求等待或者拒绝服务，可以看出漏桶算法可以强制限制数据的传输速度。</p>
+<p><strong>3.计数器限流</strong><br>计数器是一种比较简单粗暴的算法，主要用来限制总并发数，比如数据库连接池、线程池、秒杀的并发数，计数器限流只要一定时间内的总请求数超过设定的阀值则进行限流。</p>
+<h3 id="6-黑名单机制"><a href="#6-黑名单机制" class="headerlink" title="6.黑名单机制"></a>6.黑名单机制</h3><p>如果此 AppId 进行过很多非法操作，经过分析之后直接将此 AppId 列入黑名单，所有请求直接返回错误码，我们可以给每个用户设置一个状态比如包括：初始化状态，正常状态，中黑状态，关闭状态等等，或者我们直接通过分布式配置中心，直接保存黑名单列表，每次检查是否在列表中即可。</p>
+<h3 id="7-数据合法性校验"><a href="#7-数据合法性校验" class="headerlink" title="7.数据合法性校验"></a>7.数据合法性校验</h3><p>这个可以说是每个系统都会有的处理机制，只有在数据是合法的情况下才会进行数据处理，每个系统都有自己的验证规则，当然也可能有一些常规性的规则，比如身份证长度和组成，电话号码长度和组成等等。</p>
+<p>合法性校验包括：<br><strong>常规性校验：</strong><br>包括签名校验，必填校验，长度校验，类型校验，格式校验等</p>
+<p><strong>业务校验：</strong><br>根据实际业务而定，比如订单金额不能小于0、当前订单状态是否正确等</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文大致列举了几种常见的安全措施机制，不过针对具体业务场景需要具体取舍跟运用。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/接口/">接口</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2019/12/02/如何设计一个安全的HTTP接口/" data-title="如何设计一个安全的HTTP接口 | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2019/12/04/MySQL执行流程（一）/" title="MySQL执行流程（一）">
+  <strong>新一篇:</strong><br/>
+  <span>
+  MySQL执行流程（一）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2019/11/20/关于SELECT-COUNT一些问题/"  title="关于SELECT COUNT一些问题">
+ <strong>旧一篇:</strong><br/> 
+ <span>关于SELECT COUNT一些问题
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>
