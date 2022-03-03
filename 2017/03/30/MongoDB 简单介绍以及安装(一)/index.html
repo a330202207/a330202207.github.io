@@ -1,0 +1,419 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  
+    <title>MongoDB 简单介绍以及安装(一) | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="MongoDB 介绍MongoDB 是一种 NoSQL 数据库，它在数据存储的形态上和 MySQL 这类关系数据库有本质区别。MongoDB 存储的基本对象是 Document，所以我们把它称为一种文档数据库，而文档的集合则组成了 Collection。与 SQL 的概念类比，Collection ">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/myLogo.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/myLogo.png">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+</html>
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/03/30/MongoDB 简单介绍以及安装(一)/" title="MongoDB 简单介绍以及安装(一)" itemprop="url">MongoDB 简单介绍以及安装(一)</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-03-30T15:08:15.000Z" itemprop="datePublished">2017年03月30日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-介绍"><span class="toc-number">1.</span> <span class="toc-text">MongoDB 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-应用场景"><span class="toc-number">2.</span> <span class="toc-text">MongoDB 应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB-安装"><span class="toc-number">3.</span> <span class="toc-text">MongoDB 安装</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#包含mongod守护程序和关联的配置和init脚本"><span class="toc-number"></span> <span class="toc-text">包含mongod守护程序和关联的配置和init脚本</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#包含mongos守护程序"><span class="toc-number"></span> <span class="toc-text">包含mongos守护程序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#包含mongo-shell，它是一个连接mongodb的命令行客户端，允许用户直接输入nosql语法管理数据库"><span class="toc-number"></span> <span class="toc-text">包含mongo shell，它是一个连接mongodb的命令行客户端，允许用户直接输入nosql语法管理数据库</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#包含以下工具的MongoDB：数据导入、导出、备份、恢复等等"><span class="toc-number"></span> <span class="toc-text">包含以下工具的MongoDB：数据导入、导出、备份、恢复等等</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Centos6-启动"><span class="toc-number"></span> <span class="toc-text">Centos6 启动</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Centos7-启动"><span class="toc-number"></span> <span class="toc-text">Centos7 启动</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#停止-Mongodb-服务"><span class="toc-number"></span> <span class="toc-text">停止 Mongodb 服务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#重启-Mongodb"><span class="toc-number"></span> <span class="toc-text">重启 Mongodb</span></a>
+		</div>
+		
+		<h2 id="MongoDB-介绍"><a href="#MongoDB-介绍" class="headerlink" title="MongoDB 介绍"></a>MongoDB 介绍</h2><p><code>MongoDB</code> 是一种 <code>NoSQL</code> 数据库，它在<code>数据存储</code>的形态上和 <code>MySQL</code> 这类<code>关系数据库</code>有本质区别。<code>MongoDB</code> 存储的基本对象是 <code>Document</code>，所以我们把它称为一种<code>文档数据库</code>，而文档的<code>集合</code>则组成了 <code>Collection</code>。与 <code>SQL</code> 的概念类比，<code>Collection</code> 对应于 <code>Table</code> 而 <code>Document</code> 对应于 <code>Row</code>。<code>Document</code> 使用一种 <code>BSON（Binary JSON</code>）结构来表达，<code>JSON</code> 大家都熟悉，像下面这样。<br>![][1]</p>
+<h2 id="MongoDB-应用场景"><a href="#MongoDB-应用场景" class="headerlink" title="MongoDB 应用场景"></a>MongoDB 应用场景</h2><ul>
+<li>游戏场景，使用 MongoDB 存储游戏用户信息，用户的装备、积分等直接以内嵌文档的形式存储，方便查询、更新</li>
+<li>物流场景，使用 MongoDB 存储订单信息，订单状态在运送过程中会不断更新，以 MongoDB 内嵌数组的形式来存储，一次查询就能将订单所有的变更读取出来</li>
+<li>社交场景，使用 MongoDB 存储存储用户信息，以及用户发表的朋友圈信息，通过地理位置索引实现附近的人、地点等功能</li>
+<li>物联网场景，使用 MongoDB 存储所有接入的智能设备信息，以及设备汇报的日志信息，并对这些信息进行多维度的分析</li>
+<li>视频直播，使用 MongoDB 存储用户信息、礼物信息等</li>
+</ul>
+<h2 id="MongoDB-安装"><a href="#MongoDB-安装" class="headerlink" title="MongoDB 安装"></a>MongoDB 安装</h2><p><code>MongoDB</code> 的安装方式比较简单，由于<code>源码安装</code>比较麻烦，我们的本意只是为了学习 <code>MongoDB</code> 而 <code>yum</code> 种傻瓜式安装是为了更方便现在学习，本文以 yum 方式安装。</p>
+<p>工具：</p>
+<ul>
+<li><p>VMware版本号：12.0.0 </p>
+</li>
+<li><p>CentOS版本：7.0</p>
+</li>
+</ul>
+<p><code>注</code>： 3.4 版本 <code>MongoDB</code> 不再为 <code>32</code> 位平台（Linux 和 Windows）提供商业支持，本文安装版本为3.4</p>
+<p>查看自己 <code>Linux</code> 版本：</p>
+<pre><code>uname –a</code></pre><p><code>x86_64</code> 表示 <code>64</code> 位机器<br><code>i686</code> 表示 <code>32</code> 位机器</p>
+<ul>
+<li>整个 <code>MongoDB</code>（社区版）包含如下软件<pre><code></code></pre></li>
+</ul>
+<h1 id="包含mongod守护程序和关联的配置和init脚本"><a href="#包含mongod守护程序和关联的配置和init脚本" class="headerlink" title="包含mongod守护程序和关联的配置和init脚本"></a>包含mongod守护程序和关联的配置和init脚本</h1><p>mongodb-org-server    </p>
+<h1 id="包含mongos守护程序"><a href="#包含mongos守护程序" class="headerlink" title="包含mongos守护程序"></a>包含mongos守护程序</h1><p>mongodb-org-mongos    </p>
+<h1 id="包含mongo-shell，它是一个连接mongodb的命令行客户端，允许用户直接输入nosql语法管理数据库"><a href="#包含mongo-shell，它是一个连接mongodb的命令行客户端，允许用户直接输入nosql语法管理数据库" class="headerlink" title="包含mongo shell，它是一个连接mongodb的命令行客户端，允许用户直接输入nosql语法管理数据库"></a>包含mongo shell，它是一个连接mongodb的命令行客户端，允许用户直接输入nosql语法管理数据库</h1><p>mongodb-org-shell    </p>
+<h1 id="包含以下工具的MongoDB：数据导入、导出、备份、恢复等等"><a href="#包含以下工具的MongoDB：数据导入、导出、备份、恢复等等" class="headerlink" title="包含以下工具的MongoDB：数据导入、导出、备份、恢复等等"></a>包含以下工具的MongoDB：数据导入、导出、备份、恢复等等</h1><p>mongodb-org-tools    </p>
+<pre><code>
+
+ - 创建 yum 源文件
+</code></pre><p>vim /etc/yum.repos.d/mongodb-org-3.4.repo</p>
+<pre><code>
+ - 将下面内容复制到源文件中
+</code></pre><p>[mongodb-org-3.4]<br>name=MongoDB Repository<br>baseurl=<a href="https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.4/x86_64/" target="_blank" rel="noopener">https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.4/x86_64/</a><br>gpgcheck=1<br>enabled=1<br>gpgkey=<a href="https://www.mongodb.org/static/pgp/server-3.4.asc" target="_blank" rel="noopener">https://www.mongodb.org/static/pgp/server-3.4.asc</a></p>
+<pre><code>
+![][2]
+
+ - 启动 yum 命令开始安装
+</code></pre><p>yum install -y mongodb-org</p>
+<pre><code>
+ - 如果使用 `SELinux`，则必须配置 `SELinux`，以允许在基于 `Red Hat Linux` 的系统（Red Hat Enterprise Linux 或 CentOS Linux）上启动 `MongoDB`
+</code></pre><p>vim /etc/selinux/config</p>
+<pre><code>
+将 `SELINUX` 值设置为 `disabled`
+![][3]
+
+ - 启动 Mongodb (Mongodb 服务端的默认连接端口是 `27017`)
+</code></pre><h1 id="Centos6-启动"><a href="#Centos6-启动" class="headerlink" title="Centos6 启动"></a>Centos6 启动</h1><p>$ service mongod start</p>
+<h1 id="Centos7-启动"><a href="#Centos7-启动" class="headerlink" title="Centos7 启动"></a>Centos7 启动</h1><p>$ systemctl start mongod</p>
+<pre><code>
+ - 查看是否启动</code></pre><p>netstat -tlnup|grep mongod</p>
+<pre><code> - 查看是否占用 `27017` 端口号
+</code></pre><p>netstat -tlnup|grep 27017</p>
+<pre><code>
+ - 其它控制命令
+</code></pre><h1 id="停止-Mongodb-服务"><a href="#停止-Mongodb-服务" class="headerlink" title="停止 Mongodb 服务"></a>停止 Mongodb 服务</h1><p>$ service mongod stop</p>
+<h1 id="重启-Mongodb"><a href="#重启-Mongodb" class="headerlink" title="重启 Mongodb"></a>重启 Mongodb</h1><p>$ service mongod restart</p>
+<pre><code>
+ - 设置开机启动
+</code></pre><p>chkconfig mongod on</p>
+<pre><code>
+ - 找到 MongoDB 客户端
+</code></pre><p>find / -name mongo</p>
+<pre><code>![][4]
+
+ - 连接客户端
+</code></pre><p>/usr/bin/mongo</p>
+<pre><code>输入测试命令 `show dbs` 查看当前数据库有哪些
+![][5]
+
+ - 停止 MongoDB 服务器
+可以使用 `Ctrl + c` 或者输入 `exit` 退出 `MongoDB` 界面。
+
+`注`：进入 `MongoDB` 界面会出现`警告`</code></pre><p>Server has startup warnings:<br>2017-03-30T06:40:26.039+0800 I CONTROL  [initandlisten]<br>2017-03-30T06:40:26.039+0800 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.<br>2017-03-30T06:40:26.039+0800 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.<br>2017-03-30T06:40:26.039+0800 I CONTROL  [initandlisten]<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten]<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/enabled is ‘always’.<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] **        We suggest setting it to ‘never’<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten]<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/defrag is ‘always’.<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] **        We suggest setting it to ‘never’<br>2017-03-30T06:40:26.040+0800 I CONTROL  [initandlisten] </p>
+<pre><code>这是因为没有配置 `MongoDB` 的`安全功能`，如`授权`和`身份验证`。当然只是为了学习的话，可以忽略它，但是生产环境`必须需要配置`。
+
+  [1]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_JOSN.png
+  [2]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_1.png
+  [3]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_2.png
+  [4]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_3.png
+  [5]: https://ned.oss-cn-beijing.aliyuncs.com/MongoDB_4.png
+</code></pre>  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/MongoDB/">MongoDB</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/NoSQL/">NoSQL</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/03/30/MongoDB 简单介绍以及安装(一)/" data-title="MongoDB 简单介绍以及安装(一) | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/04/08/CentOS下三种PHP拓展安装方法/" title="CentOS下三种PHP拓展安装方法">
+  <strong>新一篇:</strong><br/>
+  <span>
+  CentOS下三种PHP拓展安装方法</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/03/21/yum-简单介绍/"  title="yum 简单介绍">
+ <strong>旧一篇:</strong><br/> 
+ <span>yum 简单介绍
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

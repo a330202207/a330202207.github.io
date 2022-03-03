@@ -1,0 +1,402 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  
+    <title>MySQL索引失效情况 | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="为什么我们建立了索引，查询的结果没问题，但是查询很慢，可能是你写的查询语句导致了索引失效，从而走了全表扫描，效率大大降低
+
+我们先建立一个表，写入几条测试数据，设置 user_name字段是唯一索引，MySQL当前版本为8.0.22
+对索引使用左或者左右模糊匹配当我们使用左或者左右模糊匹配的时候，也">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/myLogo.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/myLogo.png">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+</html>
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2021/02/25/MySQL索引失效情况/" title="MySQL索引失效情况" itemprop="url">MySQL索引失效情况</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2021-02-25T02:42:42.000Z" itemprop="datePublished">2021年02月25日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#对索引使用左或者左右模糊匹配"><span class="toc-number">1.</span> <span class="toc-text">对索引使用左或者左右模糊匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#对索引使用函数"><span class="toc-number">2.</span> <span class="toc-text">对索引使用函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#对索引进行表达式计算"><span class="toc-number">3.</span> <span class="toc-text">对索引进行表达式计算</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#对索引隐式类型转换"><span class="toc-number">4.</span> <span class="toc-text">对索引隐式类型转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#联合索引非最左匹配"><span class="toc-number">5.</span> <span class="toc-text">联合索引非最左匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WHERE-子句中的-OR"><span class="toc-number">6.</span> <span class="toc-text">WHERE 子句中的 OR</span></a></li></ol>
+		</div>
+		
+		<p>为什么我们建立了索引，查询的结果没问题，但是查询很慢，可能是你写的查询语句导致了索引失效，从而走了全表扫描，效率大大降低</p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88.png" alt></p>
+<p>我们先建立一个表，写入几条测试数据，设置 user_name字段是<code>唯一索引</code>，MySQL当前版本为<code>8.0.22</code><br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Xnip2022-03-02_11-43-37.png" alt></p>
+<h4 id="对索引使用左或者左右模糊匹配"><a href="#对索引使用左或者左右模糊匹配" class="headerlink" title="对索引使用左或者左右模糊匹配"></a>对索引使用左或者左右模糊匹配</h4><p>当我们使用<code>左或者左右模糊匹配</code>的时候，也就是 <code>LIKE %xx</code> 或者 <code>LIKE %xx%</code> 这两种方式都会造成<code>索引失效</code></p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Xnip2022-03-02_11-46-17.png" alt><br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302143707.png" alt></p>
+<p>执行计划中的 <code>type=ALL</code> 就代表了全表扫描，而没有走索引<br>如果查询<code>user_name</code>前缀为admin的用户，那么就会走索引扫描，执行计划中的 <code>type=range</code> 表示走索引扫描，<code>key=user_name</code> 看到实际走了 <code>user_name</code> 索引：</p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302143909.png" alt></p>
+<p>为什么 <code>LIKE</code> 关键字<strong>左或者左右模糊匹配</strong>无法走索引呢？</p>
+<p><strong>答：因为索引 B+ 树是按照「索引值」有序排列存储的，只能根据前缀进行比较</strong>，如果使用 user_name LIKE ‘%admin’ 方式来查询，因为查询的结果可能是「123admin、456admin、789admin」等之类的，所以不知道从哪个索引值开始比较，于是就只能通过全表扫描的方式来查询。</p>
+<h4 id="对索引使用函数"><a href="#对索引使用函数" class="headerlink" title="对索引使用函数"></a>对索引使用函数</h4><p>有时候我们会用一些 MySQL 自带的函数来得到我们想要的结果，这时候要注意了，如果查询条件中对索引字段使用函数，就会导致索引失效。</p>
+<p>比如下面这条语句查询条件中对 user_name 字段使用了 LENGTH 函数，执行计划中的 <code>type=ALL</code>，代表了全表扫描：<br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302145407.png" alt><br>为什么对索引使用函数，就无法走索引了呢？</p>
+<p>因为索引保存的是索引字段的原始值，而不是经过函数计算后的值，自然就没办法走索引了。</p>
+<p>不过，从 MySQL 8.0 开始，索引特性增加了函数索引，即可以针对函数计算后的值建立一个索引，也就是说该索引的值是函数计算后的值，所以就可以通过扫描索引来查询数据。</p>
+<p>举个例子，我通过下面这条语句，对 length(user_name) 的计算结果建立一个名为 idx_user_name_length 的索引。</p>
+<pre><code>ALTER TABLE `api_admin` ADD KEY idx_name_length ((LENGTH(`user_name`)))</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302145946.png" alt></p>
+<p>再次执行查询语句，这时候就会走索引了</p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302150044.png" alt></p>
+<h4 id="对索引进行表达式计算"><a href="#对索引进行表达式计算" class="headerlink" title="对索引进行表达式计算"></a>对索引进行表达式计算</h4><p>在查询条件中对索引进行表达式计算，也是无法走索引的。</p>
+<p>比如，下面这条查询语句，执行计划中<code>type = ALL</code>，说明是通过全表扫描的方式查询数据的：</p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302150436.png" alt></p>
+<p>但是，如果把查询语句的条件改成 where id = 4 - 1，这样就不是在索引字段进行表达式计算了，于是就可以走索引查询了。</p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302150522.png" alt></p>
+<p>为什么对索引进行表达式计算，就无法走索引了呢？</p>
+<p>原因跟对索引使用函数差不多。</p>
+<p>因为索引保存的是索引字段的原始值，而不是 id + 1 表达式计算后的值，所以无法走索引，只能通过把索引字段的取值都取出来，然后依次进行表达式的计算来进行条件判断，因此采用的就是全表扫描的方式。</p>
+<h4 id="对索引隐式类型转换"><a href="#对索引隐式类型转换" class="headerlink" title="对索引隐式类型转换"></a>对索引隐式类型转换</h4><p>如果索引字段是字符串类型，但是在条件查询中，输入的参数是整型的话，你会在执行计划的结果发现这条语句会走全表扫描。</p>
+<p>例如<code>phone字段</code>，是类型是 <code>varchar</code>，然后我在条件查询中，用整型作为输入参数，此时执行计划中 <code>type = ALL</code>，所以是通过全表扫描来查询数据的</p>
+<p> <img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302151642.png" alt></p>
+<p>如果换成字符类型，就会走索引扫描</p>
+<p> <img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302152016.png" alt></p>
+<p>为什么隐式类型转换会导致索引失效？<br>首先要知道 MySQL 的数据类型转换规则是什么，我们通过 select ‘10’ &gt; 9 的结果来知道</p>
+<ul>
+<li>如果规则是 MySQL 会将自动<code>字符串</code>转换成<code>数字</code>，就相当于 select 10 &gt; 9，这个就是数字比较，所以结果应该是 1</li>
+<li>如果规则是 MySQL 会将自动<code>数字</code>转换成<code>字符串</code>，就相当于 select ‘10’ &gt; ‘9’，这个是字符串比较，字符串比较大小是逐位从高位到低位逐个比较（按ascii码） ，那么’10’字符串相当于 ‘1’和’0’字符的组合，所以先是拿 ‘1’ 字符和 ‘9’ 字符比较，因为 ‘1’ 字符比 ‘9’ 字符小，所以结果应该是 0</li>
+</ul>
+<p>执行结果如下：</p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302163820.png" alt></p>
+<p>说明 MySQL 在遇到字符串和数字比较的时候，<strong>会自动把字符串转为数字</strong>，然后再进行比较</p>
+<pre><code>SELECT * FROM `api_admin` WHERE phone = 15202980611
+
+// 转换成
+SELECT * FROM `api_admin` WHERE CAST(phone AS signed int) = 15202980611
+</code></pre><p><code>CAST 函数</code>是作用在了 phone 字段，而 phone 字段是索引，对索引使用函数是会导致索引失效的</p>
+<h4 id="联合索引非最左匹配"><a href="#联合索引非最左匹配" class="headerlink" title="联合索引非最左匹配"></a>联合索引非最左匹配</h4><p>对主键字段建立的索引叫做聚簇索引，对普通字段建立的索引叫做二级索引。</p>
+<p>那么多个普通字段组合在一起创建的索引就叫做联合索引，也叫组合索引。</p>
+<p>创建联合索引时，我们需要注意创建时的顺序问题，因为联合索引 (a, b, c) 和 (c, b, a) 在使用的时候会存在差别。</p>
+<p>联合索引要能正确使用需要遵循<strong>最左匹配原则</strong>，也就是按照<strong>最左优先</strong>的方式进行索引的匹配。</p>
+<p>比如，如果创建了一个 (a, b, c) 联合索引，如果查询条件是以下这几种，就可以匹配上联合索引：</p>
+<ul>
+<li>where a=1</li>
+<li>where a=1 and b=2 and c=3</li>
+<li>where a=1 and b=2<br>需要注意的是，因为有查询优化器，所以 <strong>a 字段在 where 子句的顺序并不重要</strong></li>
+</ul>
+<p>但是，如果查询条件是以下这几种，因为不符合最左匹配原则，所以就无法匹配上联合索引，联合索引就会失效:</p>
+<ul>
+<li>where b=2</li>
+<li>where c=3</li>
+<li>where b=2 and c=3<br>有一个比较特殊的查询条件：where a = 1 and c = 3 ，符合最左匹配吗？</li>
+</ul>
+<p>这种其实严格意义上来说是属于索引截断，不同版本处理方式也不一样。</p>
+<p>MySQL 5.5 的话，前面 a 会走索引，在联合索引找到主键值后，开始回表，到主键索引读取数据行，然后再比对 c 字段的值。</p>
+<p>从 MySQL5.6 之后，有一个索引下推功能，可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。</p>
+<p>大概原理是：截断的字段会被下推到存储引擎层进行条件判断（因为 c 字段的值是在 (a, b, c) 联合索引里的），然后过滤出符合条件的数据后再返回给 Server 层。由于在引擎层就过滤掉大量的数据，无需再回表读取数据来进行判断，减少回表次数，从而提升了性能。</p>
+<p>为什么联合索引不遵循最左匹配原则就会失效？</p>
+<p>原因是，<strong>在联合索引的情况下，数据是按照索引第一列排序，第一列数据相同时才会按照第二列排序。</strong></p>
+<p>也就是说，如果我们想使用联合索引中尽可能多的列，<strong>查询条件中的各个列必须是联合索引中从最左边开始连续的列</strong>。如果我们仅仅按照第二列搜索，肯定无法走索引。</p>
+<h4 id="WHERE-子句中的-OR"><a href="#WHERE-子句中的-OR" class="headerlink" title="WHERE 子句中的 OR"></a>WHERE 子句中的 OR</h4><p>在 WHERE 子句中，如果在 OR 前的条件列是索引列，而在 OR 后的条件列不是索引列，那么索引会失效。</p>
+<p>举个例子，比如下面的查询语句，id 是主键，status 是普通列，从执行计划的结果看，是走了全表扫描。</p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302153627.png" alt></p>
+<p>这是因为 OR 的含义就是两个只要满足一个即可，因此只有一个条件列是索引列是没有意义的，只要有条件列不是索引列，就会进行全表扫描。</p>
+<p>要解决办法很简单，将 status 字段设置为索引即可</p>
+<p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302153740.png" alt></p>
+<p>可以看到 <code>type=index merge</code>， <code>index_merge</code> 的意思就是对 <code>id</code> 和 <code>status</code> 分别进行了扫描，然后将这两个结果集进行了合并，这样做的好处就是避免了全表扫描。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2021/02/25/MySQL索引失效情况/" data-title="MySQL索引失效情况 | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2020/01/16/MySQL索引/"  title="MySQL索引（二）">
+ <strong>旧一篇:</strong><br/> 
+ <span>MySQL索引（二）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>

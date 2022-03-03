@@ -1,0 +1,431 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  
+    <title>PHP汉字转拼音 | 某杰</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="KevinJie">
+    
+    <meta name="description" content="class Pinyin {
+    /**
+     * 拼音字符转换图
+     * @var array
+     */
+    private $data = array(
+        &amp;#39;a&amp;#39;=&amp;gt;-20319,&amp;#39;ai&amp;#39;=&amp;gt;-20317,&amp;#39">
+    
+    
+    
+    
+    <link rel="alternative" href="/atom.xml" title="某杰" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/myLogo.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/myLogo.png">
+    
+
+  
+  
+  <link href="http://cdn.bootcss.com/highlight.js/8.2/styles/railscasts.min.css" rel="stylesheet">
+  <script src="http://cdn.bootcss.com/highlight.js/8.2/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?d182ed77fc48758bf45a33835ee35745";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+      <script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','.............Add your swiftype userID...............');
+</script>
+</head>
+</html>
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="某杰" title="某杰"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="某杰">某杰</a></h1>
+				<h2 class="blog-motto">的博客</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+                    <ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+					</li>
+                <!--<li><div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div></li>-->
+
+				</ul>
+			</nav>	
+</div>
+    </header>
+    <div id="container" class="clearfix">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/02/16/PHP汉字转拼音/" title="PHP汉字转拼音" itemprop="url">PHP汉字转拼音</a>
+  </h1>
+  <p class="article-time">
+    <time datetime="2017-02-15T22:25:18.000Z" itemprop="datePublished">2017年02月16日</time>
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title"></strong>
+		
+		</div>
+		
+		<pre><code>class Pinyin {
+    /**
+     * 拼音字符转换图
+     * @var array
+     */
+    private $data = array(
+        &#39;a&#39;=&gt;-20319,&#39;ai&#39;=&gt;-20317,&#39;an&#39;=&gt;-20304,&#39;ang&#39;=&gt;-20295,&#39;ao&#39;=&gt;-20292,
+        &#39;ba&#39;=&gt;-20283,&#39;bai&#39;=&gt;-20265,&#39;ban&#39;=&gt;-20257,&#39;bang&#39;=&gt;-20242,&#39;bao&#39;=&gt;-20230,&#39;bei&#39;=&gt;-20051,&#39;ben&#39;=&gt;-20036,&#39;beng&#39;=&gt;-20032,&#39;bi&#39;=&gt;-20026,&#39;bian&#39;=&gt;-20002,&#39;biao&#39;=&gt;-19990,&#39;bie&#39;=&gt;-19986,&#39;bin&#39;=&gt;-19982,&#39;bing&#39;=&gt;-19976,&#39;bo&#39;=&gt;-19805,&#39;bu&#39;=&gt;-19784,
+        &#39;ca&#39;=&gt;-19775,&#39;cai&#39;=&gt;-19774,&#39;can&#39;=&gt;-19763,&#39;cang&#39;=&gt;-19756,&#39;cao&#39;=&gt;-19751,&#39;ce&#39;=&gt;-19746,&#39;ceng&#39;=&gt;-19741,&#39;cha&#39;=&gt;-19739,&#39;chai&#39;=&gt;-19728,&#39;chan&#39;=&gt;-19725,&#39;chang&#39;=&gt;-19715,&#39;chao&#39;=&gt;-19540,&#39;che&#39;=&gt;-19531,&#39;chen&#39;=&gt;-19525,&#39;cheng&#39;=&gt;-19515,&#39;chi&#39;=&gt;-19500,&#39;chong&#39;=&gt;-19484,&#39;chou&#39;=&gt;-19479,&#39;chu&#39;=&gt;-19467,&#39;chuai&#39;=&gt;-19289,&#39;chuan&#39;=&gt;-19288,&#39;chuang&#39;=&gt;-19281,&#39;chui&#39;=&gt;-19275,&#39;chun&#39;=&gt;-19270,&#39;chuo&#39;=&gt;-19263,&#39;ci&#39;=&gt;-19261,&#39;cong&#39;=&gt;-19249,&#39;cou&#39;=&gt;-19243,&#39;cu&#39;=&gt;-19242,&#39;cuan&#39;=&gt;-19238,&#39;cui&#39;=&gt;-19235,&#39;cun&#39;=&gt;-19227,&#39;cuo&#39;=&gt;-19224,
+        &#39;da&#39;=&gt;-19218,&#39;dai&#39;=&gt;-19212,&#39;dan&#39;=&gt;-19038,&#39;dang&#39;=&gt;-19023,&#39;dao&#39;=&gt;-19018,&#39;de&#39;=&gt;-19006,&#39;deng&#39;=&gt;-19003,&#39;di&#39;=&gt;-18996,&#39;dian&#39;=&gt;-18977,&#39;diao&#39;=&gt;-18961,&#39;die&#39;=&gt;-18952,&#39;ding&#39;=&gt;-18783,&#39;diu&#39;=&gt;-18774,&#39;dong&#39;=&gt;-18773,&#39;dou&#39;=&gt;-18763,&#39;du&#39;=&gt;-18756,&#39;duan&#39;=&gt;-18741,&#39;dui&#39;=&gt;-18735,&#39;dun&#39;=&gt;-18731,&#39;duo&#39;=&gt;-18722,
+        &#39;e&#39;=&gt;-18710,&#39;en&#39;=&gt;-18697,&#39;er&#39;=&gt;-18696,
+        &#39;fa&#39;=&gt;-18526,&#39;fan&#39;=&gt;-18518,&#39;fang&#39;=&gt;-18501,&#39;fei&#39;=&gt;-18490,&#39;fen&#39;=&gt;-18478,&#39;feng&#39;=&gt;-18463,&#39;fo&#39;=&gt;-18448,&#39;fou&#39;=&gt;-18447,&#39;fu&#39;=&gt;-18446,
+        &#39;ga&#39;=&gt;-18239,&#39;gai&#39;=&gt;-18237,&#39;gan&#39;=&gt;-18231,&#39;gang&#39;=&gt;-18220,&#39;gao&#39;=&gt;-18211,&#39;ge&#39;=&gt;-18201,&#39;gei&#39;=&gt;-18184,&#39;gen&#39;=&gt;-18183,&#39;geng&#39;=&gt;-18181,&#39;gong&#39;=&gt;-18012,&#39;gou&#39;=&gt;-17997,&#39;gu&#39;=&gt;-17988,&#39;gua&#39;=&gt;-17970,&#39;guai&#39;=&gt;-17964,&#39;guan&#39;=&gt;-17961,&#39;guang&#39;=&gt;-17950,&#39;gui&#39;=&gt;-17947,&#39;gun&#39;=&gt;-17931,&#39;guo&#39;=&gt;-17928,
+        &#39;ha&#39;=&gt;-17922,&#39;hai&#39;=&gt;-17759,&#39;han&#39;=&gt;-17752,&#39;hang&#39;=&gt;-17733,&#39;hao&#39;=&gt;-17730,&#39;he&#39;=&gt;-17721,&#39;hei&#39;=&gt;-17703,&#39;hen&#39;=&gt;-17701,&#39;heng&#39;=&gt;-17697,&#39;hong&#39;=&gt;-17692,&#39;hou&#39;=&gt;-17683,&#39;hu&#39;=&gt;-17676,&#39;hua&#39;=&gt;-17496,&#39;huai&#39;=&gt;-17487,&#39;huan&#39;=&gt;-17482,&#39;huang&#39;=&gt;-17468,&#39;hui&#39;=&gt;-17454,&#39;hun&#39;=&gt;-17433,&#39;huo&#39;=&gt;-17427,
+        &#39;ji&#39;=&gt;-17417,&#39;jia&#39;=&gt;-17202,&#39;jian&#39;=&gt;-17185,&#39;jiang&#39;=&gt;-16983,&#39;jiao&#39;=&gt;-16970,&#39;jie&#39;=&gt;-16942,&#39;jin&#39;=&gt;-16915,&#39;jing&#39;=&gt;-16733,&#39;jiong&#39;=&gt;-16708,&#39;jiu&#39;=&gt;-16706,&#39;ju&#39;=&gt;-16689,&#39;juan&#39;=&gt;-16664,&#39;jue&#39;=&gt;-16657,&#39;jun&#39;=&gt;-16647,
+        &#39;ka&#39;=&gt;-16474,&#39;kai&#39;=&gt;-16470,&#39;kan&#39;=&gt;-16465,&#39;kang&#39;=&gt;-16459,&#39;kao&#39;=&gt;-16452,&#39;ke&#39;=&gt;-16448,&#39;ken&#39;=&gt;-16433,&#39;keng&#39;=&gt;-16429,&#39;kong&#39;=&gt;-16427,&#39;kou&#39;=&gt;-16423,&#39;ku&#39;=&gt;-16419,&#39;kua&#39;=&gt;-16412,&#39;kuai&#39;=&gt;-16407,&#39;kuan&#39;=&gt;-16403,&#39;kuang&#39;=&gt;-16401,&#39;kui&#39;=&gt;-16393,&#39;kun&#39;=&gt;-16220,&#39;kuo&#39;=&gt;-16216,
+        &#39;la&#39;=&gt;-16212,&#39;lai&#39;=&gt;-16205,&#39;lan&#39;=&gt;-16202,&#39;lang&#39;=&gt;-16187,&#39;lao&#39;=&gt;-16180,&#39;le&#39;=&gt;-16171,&#39;lei&#39;=&gt;-16169,&#39;leng&#39;=&gt;-16158,&#39;li&#39;=&gt;-16155,&#39;lia&#39;=&gt;-15959,&#39;lian&#39;=&gt;-15958,&#39;liang&#39;=&gt;-15944,&#39;liao&#39;=&gt;-15933,&#39;lie&#39;=&gt;-15920,&#39;lin&#39;=&gt;-15915,&#39;ling&#39;=&gt;-15903,&#39;liu&#39;=&gt;-15889,&#39;long&#39;=&gt;-15878,&#39;lou&#39;=&gt;-15707,&#39;lu&#39;=&gt;-15701,&#39;lv&#39;=&gt;-15681,&#39;luan&#39;=&gt;-15667,&#39;lue&#39;=&gt;-15661,&#39;lun&#39;=&gt;-15659,&#39;luo&#39;=&gt;-15652,
+        &#39;ma&#39;=&gt;-15640,&#39;mai&#39;=&gt;-15631,&#39;man&#39;=&gt;-15625,&#39;mang&#39;=&gt;-15454,&#39;mao&#39;=&gt;-15448,&#39;me&#39;=&gt;-15436,&#39;mei&#39;=&gt;-15435,&#39;men&#39;=&gt;-15419,&#39;meng&#39;=&gt;-15416,&#39;mi&#39;=&gt;-15408,&#39;mian&#39;=&gt;-15394,&#39;miao&#39;=&gt;-15385,&#39;mie&#39;=&gt;-15377,&#39;min&#39;=&gt;-15375,&#39;ming&#39;=&gt;-15369,&#39;miu&#39;=&gt;-15363,&#39;mo&#39;=&gt;-15362,&#39;mou&#39;=&gt;-15183,&#39;mu&#39;=&gt;-15180,
+        &#39;na&#39;=&gt;-15165,&#39;nai&#39;=&gt;-15158,&#39;nan&#39;=&gt;-15153,&#39;nang&#39;=&gt;-15150,&#39;nao&#39;=&gt;-15149,&#39;ne&#39;=&gt;-15144,&#39;nei&#39;=&gt;-15143,&#39;nen&#39;=&gt;-15141,&#39;neng&#39;=&gt;-15140,&#39;ni&#39;=&gt;-15139,&#39;nian&#39;=&gt;-15128,&#39;niang&#39;=&gt;-15121,&#39;niao&#39;=&gt;-15119,&#39;nie&#39;=&gt;-15117,&#39;nin&#39;=&gt;-15110,&#39;ning&#39;=&gt;-15109,&#39;niu&#39;=&gt;-14941,&#39;nong&#39;=&gt;-14937,&#39;nu&#39;=&gt;-14933,&#39;nv&#39;=&gt;-14930,&#39;nuan&#39;=&gt;-14929,&#39;nue&#39;=&gt;-14928,&#39;nuo&#39;=&gt;-14926,
+        &#39;o&#39;=&gt;-14922,&#39;ou&#39;=&gt;-14921,
+        &#39;pa&#39;=&gt;-14914,&#39;pai&#39;=&gt;-14908,&#39;pan&#39;=&gt;-14902,&#39;pang&#39;=&gt;-14894,&#39;pao&#39;=&gt;-14889,&#39;pei&#39;=&gt;-14882,&#39;pen&#39;=&gt;-14873,&#39;peng&#39;=&gt;-14871,&#39;pi&#39;=&gt;-14857,&#39;pian&#39;=&gt;-14678,&#39;piao&#39;=&gt;-14674,&#39;pie&#39;=&gt;-14670,&#39;pin&#39;=&gt;-14668,&#39;ping&#39;=&gt;-14663,&#39;po&#39;=&gt;-14654,&#39;pu&#39;=&gt;-14645,
+        &#39;qi&#39;=&gt;-14630,&#39;qia&#39;=&gt;-14594,&#39;qian&#39;=&gt;-14429,&#39;qiang&#39;=&gt;-14407,&#39;qiao&#39;=&gt;-14399,&#39;qie&#39;=&gt;-14384,&#39;qin&#39;=&gt;-14379,&#39;qing&#39;=&gt;-14368,&#39;qiong&#39;=&gt;-14355,&#39;qiu&#39;=&gt;-14353,&#39;qu&#39;=&gt;-14345,&#39;quan&#39;=&gt;-14170,&#39;que&#39;=&gt;-14159,&#39;qun&#39;=&gt;-14151,
+        &#39;ran&#39;=&gt;-14149,&#39;rang&#39;=&gt;-14145,&#39;rao&#39;=&gt;-14140,&#39;re&#39;=&gt;-14137,&#39;ren&#39;=&gt;-14135,&#39;reng&#39;=&gt;-14125,&#39;ri&#39;=&gt;-14123,&#39;rong&#39;=&gt;-14122,&#39;rou&#39;=&gt;-14112,&#39;ru&#39;=&gt;-14109,&#39;ruan&#39;=&gt;-14099,&#39;rui&#39;=&gt;-14097,&#39;run&#39;=&gt;-14094,&#39;ruo&#39;=&gt;-14092,
+        &#39;sa&#39;=&gt;-14090,&#39;sai&#39;=&gt;-14087,&#39;san&#39;=&gt;-14083,&#39;sang&#39;=&gt;-13917,&#39;sao&#39;=&gt;-13914,&#39;se&#39;=&gt;-13910,&#39;sen&#39;=&gt;-13907,&#39;seng&#39;=&gt;-13906,&#39;sha&#39;=&gt;-13905,&#39;shai&#39;=&gt;-13896,&#39;shan&#39;=&gt;-13894,&#39;shang&#39;=&gt;-13878,&#39;shao&#39;=&gt;-13870,&#39;she&#39;=&gt;-13859,&#39;shen&#39;=&gt;-13847,&#39;sheng&#39;=&gt;-13831,&#39;shi&#39;=&gt;-13658,&#39;shou&#39;=&gt;-13611,&#39;shu&#39;=&gt;-13601,&#39;shua&#39;=&gt;-13406,&#39;shuai&#39;=&gt;-13404,&#39;shuan&#39;=&gt;-13400,&#39;shuang&#39;=&gt;-13398,&#39;shui&#39;=&gt;-13395,&#39;shun&#39;=&gt;-13391,&#39;shuo&#39;=&gt;-13387,&#39;si&#39;=&gt;-13383,&#39;song&#39;=&gt;-13367,&#39;sou&#39;=&gt;-13359,&#39;su&#39;=&gt;-13356,&#39;suan&#39;=&gt;-13343,&#39;sui&#39;=&gt;-13340,&#39;sun&#39;=&gt;-13329,&#39;suo&#39;=&gt;-13326,
+        &#39;ta&#39;=&gt;-13318,&#39;tai&#39;=&gt;-13147,&#39;tan&#39;=&gt;-13138,&#39;tang&#39;=&gt;-13120,&#39;tao&#39;=&gt;-13107,&#39;te&#39;=&gt;-13096,&#39;teng&#39;=&gt;-13095,&#39;ti&#39;=&gt;-13091,&#39;tian&#39;=&gt;-13076,&#39;tiao&#39;=&gt;-13068,&#39;tie&#39;=&gt;-13063,&#39;ting&#39;=&gt;-13060,&#39;tong&#39;=&gt;-12888,&#39;tou&#39;=&gt;-12875,&#39;tu&#39;=&gt;-12871,&#39;tuan&#39;=&gt;-12860,&#39;tui&#39;=&gt;-12858,&#39;tun&#39;=&gt;-12852,&#39;tuo&#39;=&gt;-12849,
+        &#39;wa&#39;=&gt;-12838,&#39;wai&#39;=&gt;-12831,&#39;wan&#39;=&gt;-12829,&#39;wang&#39;=&gt;-12812,&#39;wei&#39;=&gt;-12802,&#39;wen&#39;=&gt;-12607,&#39;weng&#39;=&gt;-12597,&#39;wo&#39;=&gt;-12594,&#39;wu&#39;=&gt;-12585,
+        &#39;xi&#39;=&gt;-12556,&#39;xia&#39;=&gt;-12359,&#39;xian&#39;=&gt;-12346,&#39;xiang&#39;=&gt;-12320,&#39;xiao&#39;=&gt;-12300,&#39;xie&#39;=&gt;-12120,&#39;xin&#39;=&gt;-12099,&#39;xing&#39;=&gt;-12089,&#39;xiong&#39;=&gt;-12074,&#39;xiu&#39;=&gt;-12067,&#39;xu&#39;=&gt;-12058,&#39;xuan&#39;=&gt;-12039,&#39;xue&#39;=&gt;-11867,&#39;xun&#39;=&gt;-11861,
+        &#39;ya&#39;=&gt;-11847,&#39;yan&#39;=&gt;-11831,&#39;yang&#39;=&gt;-11798,&#39;yao&#39;=&gt;-11781,&#39;ye&#39;=&gt;-11604,&#39;yi&#39;=&gt;-11589,&#39;yin&#39;=&gt;-11536,&#39;ying&#39;=&gt;-11358,&#39;yo&#39;=&gt;-11340,&#39;yong&#39;=&gt;-11339,&#39;you&#39;=&gt;-11324,&#39;yu&#39;=&gt;-11303,&#39;yuan&#39;=&gt;-11097,&#39;yue&#39;=&gt;-11077,&#39;yun&#39;=&gt;-11067,
+        &#39;za&#39;=&gt;-11055,&#39;zai&#39;=&gt;-11052,&#39;zan&#39;=&gt;-11045,&#39;zang&#39;=&gt;-11041,&#39;zao&#39;=&gt;-11038,&#39;ze&#39;=&gt;-11024,&#39;zei&#39;=&gt;-11020,&#39;zen&#39;=&gt;-11019,&#39;zeng&#39;=&gt;-11018,&#39;zha&#39;=&gt;-11014,&#39;zhai&#39;=&gt;-10838,&#39;zhan&#39;=&gt;-10832,&#39;zhang&#39;=&gt;-10815,&#39;zhao&#39;=&gt;-10800,&#39;zhe&#39;=&gt;-10790,&#39;zhen&#39;=&gt;-10780,&#39;zheng&#39;=&gt;-10764,&#39;zhi&#39;=&gt;-10587,&#39;zhong&#39;=&gt;-10544,&#39;zhou&#39;=&gt;-10533,&#39;zhu&#39;=&gt;-10519,&#39;zhua&#39;=&gt;-10331,&#39;zhuai&#39;=&gt;-10329,&#39;zhuan&#39;=&gt;-10328,&#39;zhuang&#39;=&gt;-10322,&#39;zhui&#39;=&gt;-10315,&#39;zhun&#39;=&gt;-10309,&#39;zhuo&#39;=&gt;-10307,&#39;zi&#39;=&gt;-10296,&#39;zong&#39;=&gt;-10281,&#39;zou&#39;=&gt;-10274,&#39;zu&#39;=&gt;-10270,&#39;zuan&#39;=&gt;-10262,&#39;zui&#39;=&gt;-10260,&#39;zun&#39;=&gt;-10256,&#39;zuo&#39;=&gt;-10254
+    );
+
+    /**
+     * 将中文编码成拼音
+     * @param string $str 要转换为拼音的字符串
+     * @param string $RetFormat 返回格式 [first:每个字的首字母|all:全拼音|one:字符串字母]
+     * @return string
+     */
+    public function get_pinyin($str, $RetFormat=&#39;first&#39;)
+    {
+        $GBK = iconv(&#39;UTF-8&#39;, &#39;GBK&#39;, $str);
+        $UTF8 = iconv(&#39;GBK&#39;, &#39;UTF-8&#39;, $GBK);
+        if($UTF8 != $str) $GBK = $str;
+        $Buf = array();
+        for ($i=0, $iLoop=strlen($GBK); $i&lt;$iLoop; $i++) {
+            $Chr = ord($GBK{$i});
+            if ($Chr&gt;160) {
+                $Chr = ($Chr&lt;&lt;8) + ord($GBK{++$i}) - 65536;
+            }
+            if (&#39;first&#39; == $RetFormat || &#39;one&#39; == $RetFormat) {
+                $Buf[] = substr($this-&gt;zh2py($Chr),0,1);
+            }else{
+                $Buf[] = $this-&gt;zh2py($Chr);
+            }
+
+        }
+        if (&#39;first&#39; === $RetFormat) {
+            return implode(&#39;&#39;, $Buf);
+        }elseif(&#39;one&#39; == $RetFormat) {
+            return $Buf[0];
+        }else{
+            return implode(&#39; &#39;, $Buf);
+        }
+    }
+
+    /**
+     * 中文转换到拼音(每次处理一个字符)
+     * @param number $iWORD 待处理字符双字节
+     * @return string 拼音
+     */
+    private function zh2py($iWORD) 
+    {
+        if($iWORD&gt;0 &amp;&amp; $iWORD&lt;160 ) {
+            return chr($iWORD);
+        } elseif ($iWORD&lt;-20319||$iWORD&gt;-10247) {
+            return &#39;&#39;;
+        } else {
+            foreach ($this-&gt;data as $py =&gt; $code) {
+                if($code &gt; $iWORD) break;
+                $result = $py;
+            }
+            return $result;
+        }
+    }
+}
+
+$Pinyin = new Pinyin();
+//结果为拼音首字母
+echo $Pinyin-&gt;get_pinyin(&#39;测试文字&#39;), &#39;&lt;br/&gt;&#39;; 
+//结果为全拼音
+echo $Pinyin-&gt;get_pinyin(&#39;测试文字&#39;, &#39;all&#39;), &#39;&lt;br/&gt;&#39;; 
+//结果为第一个拼音
+echo $Pinyin-&gt;get_pinyin(&#39;测试文字&#39;, &#39;one&#39;), &#39;&lt;br/&gt;&#39;; </code></pre>  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/PHP/">PHP</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2017/02/16/PHP汉字转拼音/" data-title="PHP汉字转拼音 | 某杰" data-tsina="" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/02/17/PHP高效导出Excel-CSV/" title="PHP高效导出Excel(CSV)">
+  <strong>新一篇:</strong><br/>
+  <span>
+  PHP高效导出Excel(CSV)</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/02/15/PHP多维数组去重/"  title="PHP多维数组去重">
+ <strong>旧一篇:</strong><br/> 
+ <span>PHP多维数组去重
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+    </div>
+    <footer><div id="footer" >
+	<div class="copyright">
+		<span>Powered by <a href="https://github.com/hexojs/hexo">Hexo</a> and theme by 
+		<a href="https://github.com/levonlin/Tinnypp">Tinnypp</a>.</span>
+		
+			<span>© 某杰</span>
+		
+	<div>
+</div></footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  //back to top
+  function backToTop(){
+    var buttonHTML = $("<a href=\"#top\" id=\"back-top\">" + "<span>Back to Top</span></a>");
+    buttonHTML.appendTo($("body"));
+    var buttonToTop = $("#back-top");
+    // hide #back-top first
+    buttonToTop.hide();
+
+    // fade in #back-top
+    $(function() {
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                buttonToTop.fadeIn();
+            } else {
+                buttonToTop.fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        buttonToTop.click(function() {
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+    });
+  }
+  backToTop();
+
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      ta = $('#toc.toc-aside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+
+  var show = true;
+  c.click(function(){
+    if(show == true){
+        a.addClass('fadeOut').css('display', 'none');
+        ta.css('display', 'block').addClass('fadeIn');
+        m.addClass('moveMain');  
+    }else{
+        a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');     
+        ta.css('display', 'none'); 
+        m.removeClass('moveMain');
+        $('#toc.toc-aside').css('display', 'none');
+    }
+    show = !show;
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,240-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+<script type="text/javascript">
+  function footerPosition() {
+    var contentHeight = document.documentElement.scrollHeight,
+        winHeight = window.innerHeight;
+    if(contentHeight <= winHeight) {
+      $('footer').addClass('fixed-bottom');
+    } else {
+      $('footer').removeClass('fixed-bottom');
+    }
+  }
+  footerPosition();
+  $(window).resize(footerPosition);
+</script>
+
+
+  </body>
+</html>
