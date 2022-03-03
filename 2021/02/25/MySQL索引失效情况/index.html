@@ -147,7 +147,7 @@ var _hmt = _hmt || [];
 
 // 转换成
 SELECT * FROM `api_admin` WHERE CAST(phone AS signed int) = 15202980611
-</code></pre><p><code>CAST 函数</code>是作用在了 phone 字段，而 phone 字段是索引，对索引使用函数是会导致索引失效的</p>
+</code></pre><p><code>CAST 函数</code>是作用在了 phone 字段，而 phone 字段是索引，<strong>对索引使用函数是会导致索引失效的</strong></p>
 <h4 id="联合索引非最左匹配"><a href="#联合索引非最左匹配" class="headerlink" title="联合索引非最左匹配"></a>联合索引非最左匹配</h4><p>对主键字段建立的索引叫做聚簇索引，对普通字段建立的索引叫做二级索引。</p>
 <p>那么多个普通字段组合在一起创建的索引就叫做联合索引，也叫组合索引。</p>
 <p>创建联合索引时，我们需要注意创建时的顺序问题，因为联合索引 (a, b, c) 和 (c, b, a) 在使用的时候会存在差别。</p>
