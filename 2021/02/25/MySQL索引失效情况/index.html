@@ -108,7 +108,7 @@ var _hmt = _hmt || [];
 		
 		<p>为什么我们建立了索引，查询的结果没问题，但是查询很慢，可能是你写的查询语句导致了索引失效，从而走了全表扫描，效率大大降低</p>
 <p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88.png" alt></p>
-<p>我们先建立一个表，写入几条测试数据，设置 user_name字段是<code>唯一索引</code>，MySQL当前版本为<code>8.0.22</code><br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Xnip2022-03-02_11-43-37.png" alt></p>
+<p>我们先建立一个表，写入几条测试数据，设置 user_name字段是<code>唯一索引</code>，MySQL当前版本为<code>8.0.22</code><br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220303181215.png" alt></p>
 <h4 id="对索引使用左或者左右模糊匹配"><a href="#对索引使用左或者左右模糊匹配" class="headerlink" title="对索引使用左或者左右模糊匹配"></a>对索引使用左或者左右模糊匹配</h4><p>当我们使用<code>左或者左右模糊匹配</code>的时候，也就是 <code>LIKE %xx</code> 或者 <code>LIKE %xx%</code> 这两种方式都会造成<code>索引失效</code></p>
 <p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/Xnip2022-03-02_11-46-17.png" alt><br><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302143707.png" alt></p>
 <p>执行计划中的 <code>type=ALL</code> 就代表了全表扫描，而没有走索引<br>如果查询<code>user_name</code>前缀为admin的用户，那么就会走索引扫描，执行计划中的 <code>type=range</code> 表示走索引扫描，<code>key=user_name</code> 看到实际走了 <code>user_name</code> 索引：</p>
@@ -120,8 +120,7 @@ var _hmt = _hmt || [];
 <p>因为索引保存的是索引字段的原始值，而不是经过函数计算后的值，自然就没办法走索引了。</p>
 <p>不过，从 MySQL 8.0 开始，索引特性增加了函数索引，即可以针对函数计算后的值建立一个索引，也就是说该索引的值是函数计算后的值，所以就可以通过扫描索引来查询数据。</p>
 <p>举个例子，我通过下面这条语句，对 length(user_name) 的计算结果建立一个名为 idx_user_name_length 的索引。</p>
-<pre><code>ALTER TABLE `api_admin` ADD KEY idx_name_length ((LENGTH(`user_name`)))</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302145946.png" alt></p>
-<p>再次执行查询语句，这时候就会走索引了</p>
+<pre><code>ALTER TABLE `api_admin` ADD KEY idx_name_length ((LENGTH(`user_name`)))</code></pre><p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220303181357.png" alt><br>再次执行查询语句，这时候就会走索引了</p>
 <p><img src="https://ned.oss-cn-beijing.aliyuncs.com/image/20220302150044.png" alt></p>
 <h4 id="对索引进行表达式计算"><a href="#对索引进行表达式计算" class="headerlink" title="对索引进行表达式计算"></a>对索引进行表达式计算</h4><p>在查询条件中对索引进行表达式计算，也是无法走索引的。</p>
 <p>比如，下面这条查询语句，执行计划中<code>type = ALL</code>，说明是通过全表扫描的方式查询数据的：</p>
